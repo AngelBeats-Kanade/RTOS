@@ -45,14 +45,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-static StackType_t Idle_Task_Stack[configMINIMAL_STACK_SIZE];
-static StackType_t Timer_Task_Stack[configTIMER_TASK_STACK_DEPTH];
 
-static StaticTask_t Idle_Task_TCB;
-static StaticTask_t Timer_Task_TCB;
-
-static StackType_t AppTaskCreate_Stack[128];
-static StackType_t LED_Task_Stack[128];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -97,7 +90,7 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  printf("This is my first test!");
+  printf("Hardware loaded successfully!\n");
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -157,53 +150,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-static void LED_Task(void *paramter) 
-{
-  HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-  osDelay(500);
-  HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-  osDelay(500);
-}
 
- /**
-  *******************************************************************
-  * @brief 获取空闲任务的任务堆栈和任务控制块内存
-  * @param ppxTimerTaskTCBBuffer : 任务控制块内存
-  * @param ppxTimerTaskStackBuffer : 任务堆栈内存
-  * @param pulTimerTaskStackSize : 任务堆栈大小
-  * @author AngelBeats
-  * @version V1.0
-  * @date 2020-12-27
- **********************************************************************
- */
-void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer,
-                                   StackType_t **ppxIdleTaskStackBuffer,
-                                   uint32_t *pulIdleTaskStackSize)
-{
-  *ppxIdleTaskTCBBuffer = &Idle_Task_TCB;
-  *ppxIdleTaskStackBuffer = Idle_Task_Stack;
-  *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
-}
-
-/**
-  *********************************************************************
-  * @brief 获取定时器任务的任务堆栈和任务控制块内存
-  * @param ppxTimerTaskTCBBuffer : 任务控制块内存
-  * @param ppxTimerTaskStackBuffer : 任务堆栈内存
-  * @param pulTimerTaskStackSize : 任务堆栈大小
-  * @author angelbeats
-  * @version V1.0
-  * @date 2020-12-27
-  **********************************************************************
-  */
-void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer,
-                                    StackType_t **ppxTimerTaskStackBuffer,
-                                    uint32_t *pulTimerTaskStackSize)
-{
-  *ppxTimerTaskTCBBuffer = &Timer_Task_TCB;
-  *ppxTimerTaskStackBuffer = Timer_Task_Stack;
-  *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
-}
 /* USER CODE END 4 */
 
 /**
