@@ -29,6 +29,7 @@ extern "C" {
 
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+
 /* USER CODE END Includes */
 
 extern UART_HandleTypeDef huart1;
@@ -40,17 +41,21 @@ extern UART_HandleTypeDef huart1;
 void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+void Usart_SendString(uint8_t *str);
+
 #ifdef __GNUC__
 
 int __io_putchar(int ch);
+
 int __io_getchar(void);
 
 #else
 
 int fputc(int ch, FILE *f);
+
 int fgetc(FILE *f);
 
-#endif // __GNUC__
+#endif //__GNUC__
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

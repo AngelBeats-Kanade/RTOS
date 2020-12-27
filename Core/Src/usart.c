@@ -43,18 +43,17 @@ void MX_USART1_UART_Init(void)
   {
     Error_Handler();
   }
-
 }
 
-void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
+void HAL_UART_MspInit(UART_HandleTypeDef *uartHandle)
 {
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-  if(uartHandle->Instance==USART1)
+  if (uartHandle->Instance == USART1)
   {
-  /* USER CODE BEGIN USART1_MspInit 0 */
+    /* USER CODE BEGIN USART1_MspInit 0 */
 
-  /* USER CODE END USART1_MspInit 0 */
+    /* USER CODE END USART1_MspInit 0 */
     /* USART1 clock enable */
     __HAL_RCC_USART1_CLK_ENABLE();
 
@@ -73,20 +72,20 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN USART1_MspInit 1 */
+    /* USER CODE BEGIN USART1_MspInit 1 */
 
-  /* USER CODE END USART1_MspInit 1 */
+    /* USER CODE END USART1_MspInit 1 */
   }
 }
 
-void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
+void HAL_UART_MspDeInit(UART_HandleTypeDef *uartHandle)
 {
 
-  if(uartHandle->Instance==USART1)
+  if (uartHandle->Instance == USART1)
   {
-  /* USER CODE BEGIN USART1_MspDeInit 0 */
+    /* USER CODE BEGIN USART1_MspDeInit 0 */
 
-  /* USER CODE END USART1_MspDeInit 0 */
+    /* USER CODE END USART1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_USART1_CLK_DISABLE();
 
@@ -94,50 +93,60 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     PA9     ------> USART1_TX
     PA10     ------> USART1_RX
     */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9|GPIO_PIN_10);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9 | GPIO_PIN_10);
 
-  /* USER CODE BEGIN USART1_MspDeInit 1 */
+    /* USER CODE BEGIN USART1_MspDeInit 1 */
 
-  /* USER CODE END USART1_MspDeInit 1 */
+    /* USER CODE END USART1_MspDeInit 1 */
   }
 }
 
 /* USER CODE BEGIN 1 */
-void Usart_SendString(uint8_t *str) {
+void Usart_SendString(uint8_t *str)
+{
   unsigned int k = 0;
-  do {
-    HAL_UART_Transmit(&huart1, (uint8_t *)(str + k), 1, 1000);
+  do
+  {
+    HAL_UART_Transmit(&huart1, (uint8_t *) (str + k), 1, 1000);
     k++;
   } while (*(str + k) != '\0');
 }
 
 #ifdef __GNUC__
-//ÖØ¶¨Ïòc¿âº¯Êıprintfµ½´®¿ÚDEBUG_USART£¬ÖØ¶¨Ïòºó¿ÉÊ¹ÓÃprintfº¯Êı
-int __io_putchar(int ch) {
-  HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 1000);
+
+//é‡å®šå‘cåº“å‡½æ•°printfåˆ°ä¸²å£DEBUG_USARTï¼Œé‡å®šå‘åå¯ä½¿ç”¨printfå‡½æ•°
+int __io_putchar(int ch)
+{
+  HAL_UART_Transmit(&huart1, (uint8_t *) &ch, 1, 1000);
 }
 
-//ÖØ¶¨Ïòc¿âº¯Êıscanfµ½´®¿ÚDEBUG_USART£¬ÖØĞ´Ïòºó¿ÉÊ¹ÓÃscanf¡¢getcharµÈº¯Êı
-int __io_getchar(void) {
+//é‡å®šå‘cåº“å‡½æ•°scanfåˆ°ä¸²å£DEBUG_USARTï¼Œé‡å†™å‘åå¯ä½¿ç”¨scanfã€getcharç­‰å‡½æ•°
+int __io_getchar(void)
+{
   int ch;
-  HAL_UART_Receive(&huart1, (uint8_t *)&ch, 1, 1000);
+  HAL_UART_Receive(&huart1, (uint8_t *) &ch, 1, 1000);
   return (ch);
 }
+
 #else
-//ÖØ¶¨Ïòc¿âº¯Êıprintfµ½´®¿ÚDEBUG_USART£¬ÖØ¶¨Ïòºó¿ÉÊ¹ÓÃprintfº¯Êı
-int fputc(int ch, FILE *f) {
-  /* ·¢ËÍÒ»¸ö×Ö½ÚÊı¾İµ½´®¿ÚDEBUG_USART */
+
+//é‡å®šå‘cåº“å‡½æ•°printfåˆ°ä¸²å£DEBUG_USARTï¼Œé‡å®šå‘åå¯ä½¿ç”¨printfå‡½æ•°
+int fputc(int ch, FILE *f)
+{
+  /* å‘é€ä¸€ä¸ªå­—èŠ‚æ•°æ®åˆ°ä¸²å£DEBUG_USART */
   HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, 1000);
 
   return (ch);
 }
 
-//ÖØ¶¨Ïòc¿âº¯Êıscanfµ½´®¿ÚDEBUG_USART£¬ÖØĞ´Ïòºó¿ÉÊ¹ÓÃscanf¡¢getcharµÈº¯Êı
-int fgetc(FILE *f) {
+//é‡å®šå‘cåº“å‡½æ•°scanfåˆ°ä¸²å£DEBUG_USARTï¼Œé‡å†™å‘åå¯ä½¿ç”¨scanfã€getcharç­‰å‡½æ•°
+int fgetc(FILE *f)
+{
   int ch;
   HAL_UART_Receive(&UartHandle, (uint8_t *)&ch, 1, 1000);
   return (ch);
 }
+
 #endif // __GNUC__
 /* USER CODE END 1 */
 

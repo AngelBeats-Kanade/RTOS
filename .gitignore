@@ -1,3 +1,9 @@
 Project4
 .idea
-Cmake-build-debug
+cmake-build-debug
+CMakeLists.txt
+.cproject
+.mxproject
+.project
+Project4.xml
+st_f103rc.cfg

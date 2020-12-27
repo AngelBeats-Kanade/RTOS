@@ -61,9 +61,9 @@ static StaticTask_t LED2_Task_TCB;
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+        .name = "defaultTask",
+        .priority = (osPriority_t) osPriorityNormal,
+        .stack_size = 128 * 4
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -73,6 +73,7 @@ static void AppTaskCreate(void);
 static void LED1_Task(void *pvParameters);
 
 static void LED2_Task(void *pvParameters);
+
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -84,7 +85,8 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
   * @param  None
   * @retval None
   */
-void MX_FREERTOS_Init(void) {
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -116,13 +118,13 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   AppTaskCreate_Handle =
-      xTaskCreateStatic((TaskFunction_t)AppTaskCreate, //ÈÎÎñº¯Êı
-                        (const char *)"AppTaskCreate", //ÈÎÎñÃû³Æ
-                        (uint32_t)128,                 //ÈÎÎñ¶ÑÕ»´óĞ¡
-                        (void *)NULL,   //´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                        (UBaseType_t)3, //ÈÎÎñÓÅÏÈ¼¶
-                        (StackType_t *)AppTaskCreate_Stack,  //ÈÎÎñ¶ÑÕ»
-                        (StaticTask_t *)&AppTaskCreate_TCB); //ÈÎÎñ¿ØÖÆ¿é
+          xTaskCreateStatic((TaskFunction_t) AppTaskCreate, //ä»»åŠ¡å‡½æ•°
+                            (const char *) "AppTaskCreate", //ä»»åŠ¡åç§°
+                            (uint32_t) 128,                 //ä»»åŠ¡å †æ ˆå¤§å°
+                            (void *) NULL,   //ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                            (UBaseType_t) 3, //ä»»åŠ¡ä¼˜å…ˆçº§
+                            (StackType_t *) AppTaskCreate_Stack,  //ä»»åŠ¡å †æ ˆ
+                            (StaticTask_t *) &AppTaskCreate_TCB); //ä»»åŠ¡æ§åˆ¶å—
   if (NULL == AppTaskCreate_Handle)
   {
     Error_Handler();
@@ -142,7 +144,7 @@ void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
-  for(;;)
+  for (;;)
   {
     osDelay(1);
   }
@@ -152,47 +154,45 @@ void StartDefaultTask(void *argument)
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 /**
- *******************************************************************
- * @brief   ÎªÁË·½±ã¹ÜÀí£¬ËùÓĞµÄÈÎÎñ´´½¨º¯Êı¶¼·ÅÔÚÕâ¸öº¯ÊıÀïÃæ
- * @param   ÎŞ
- * @retval  ÎŞ
- * @author  AngelBeats
- * @version V1.0
- * @date    2020-12-27
- **********************************************************************
- */
+  * @brief   ä¸ºäº†æ–¹ä¾¿ç®¡ç†ï¼Œæ‰€æœ‰çš„ä»»åŠ¡åˆ›å»ºå‡½æ•°éƒ½æ”¾åœ¨è¿™ä¸ªå‡½æ•°é‡Œé¢
+  * @param   æ— 
+  * @retval  æ— 
+  * @author  AngelBeats
+  * @version V1.0
+  * @date    2020-12-27
+  */
 static void AppTaskCreate(void)
 {
-  taskENTER_CRITICAL(); //½øÈëÁÙ½çÇø
+  taskENTER_CRITICAL(); //è¿›å…¥ä¸´ç•ŒåŒº
 
-  /* ´´½¨LED_TaskÈÎÎñ */
+  /* åˆ›å»ºLED_Taskä»»åŠ¡ */
   LED1_Task_Handle =
-      xTaskCreateStatic((TaskFunction_t)LED1_Task,       //ÈÎÎñº¯Êı
-                        (const char *)"LED1_Task",       //ÈÎÎñÃû³Æ
-                        (uint32_t)128,                   //ÈÎÎñ¶ÑÕ»´óĞ¡
-                        (void *)NULL,                    //´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                        (UBaseType_t)4,                  //ÈÎÎñÓÅÏÈ¼¶
-                        (StackType_t *)LED1_Task_Stack,  //ÈÎÎñ¶ÑÕ»
-                        (StaticTask_t *)&LED1_Task_TCB); //ÈÎÎñ¿ØÖÆ¿é
+          xTaskCreateStatic((TaskFunction_t) LED1_Task,       //ä»»åŠ¡å‡½æ•°
+                            (const char *) "LED1_Task",       //ä»»åŠ¡åç§°
+                            (uint32_t) 128,                   //ä»»åŠ¡å †æ ˆå¤§å°
+                            (void *) NULL,                    //ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                            (UBaseType_t) 4,                  //ä»»åŠ¡ä¼˜å…ˆçº§
+                            (StackType_t *) LED1_Task_Stack,  //ä»»åŠ¡å †æ ˆ
+                            (StaticTask_t *) &LED1_Task_TCB); //ä»»åŠ¡æ§åˆ¶å—
 
   LED2_Task_Handle =
-      xTaskCreateStatic((TaskFunction_t)LED2_Task,       //ÈÎÎñº¯Êı
-                        (const char *)"LED2_Task",       //ÈÎÎñÃû³Æ
-                        (uint32_t)128,                   //ÈÎÎñ¶ÑÕ»´óĞ¡
-                        (void *)NULL,                    //´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                        (UBaseType_t)4,                  //ÈÎÎñÓÅÏÈ¼¶
-                        (StackType_t *)LED2_Task_Stack,  //ÈÎÎñ¶ÑÕ»
-                        (StaticTask_t *)&LED2_Task_TCB); //ÈÎÎñ¿ØÖÆ¿é
+          xTaskCreateStatic((TaskFunction_t) LED2_Task,       //ä»»åŠ¡å‡½æ•°
+                            (const char *) "LED2_Task",       //ä»»åŠ¡åç§°
+                            (uint32_t) 128,                   //ä»»åŠ¡å †æ ˆå¤§å°
+                            (void *) NULL,                    //ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                            (UBaseType_t) 4,                  //ä»»åŠ¡ä¼˜å…ˆçº§
+                            (StackType_t *) LED2_Task_Stack,  //ä»»åŠ¡å †æ ˆ
+                            (StaticTask_t *) &LED2_Task_TCB); //ä»»åŠ¡æ§åˆ¶å—
 
   if (NULL != LED1_Task_Handle)
-    printf("LED1_TaskÈÎÎñ´´½¨³É¹¦!\n");
+    printf("LED1_Taskä»»åŠ¡åˆ›å»ºæˆåŠŸ!\n");
   else
-    printf("LED1_TaskÈÎÎñ´´½¨Ê§°Ü!\n");
+    printf("LED1_Taskä»»åŠ¡åˆ›å»ºå¤±è´¥!\n");
 
   if (NULL != LED2_Task_Handle)
-    printf("LED2_TaskÈÎÎñ´´½¨³É¹¦!\n");
+    printf("LED2_Taskä»»åŠ¡åˆ›å»ºæˆåŠŸ!\n");
   else
-    printf("LED2_TaskÈÎÎñ´´½¨Ê§°Ü!\n");
+    printf("LED2_Taskä»»åŠ¡åˆ›å»ºå¤±è´¥!\n");
 
   vTaskDelete(AppTaskCreate_Handle);
 
@@ -200,15 +200,13 @@ static void AppTaskCreate(void)
 }
 
 /**
- *******************************************************************
- * @brief   LED1µÄÈÎÎñÖ÷Ìå
- * @param   ÎŞ
- * @retval  ÎŞ
- * @author  AngelBeats
- * @version V1.0
- * @date    2020-12-27
- **********************************************************************
- */
+  * @brief   LED1çš„ä»»åŠ¡ä¸»ä½“
+  * @param   æ— 
+  * @retval  æ— 
+  * @author  AngelBeats
+  * @version V1.0
+  * @date    2020-12-27
+  */
 static void LED1_Task(void *paramter)
 {
   while (1)
@@ -221,16 +219,15 @@ static void LED1_Task(void *paramter)
 }
 
 /**
- *******************************************************************
- * @brief   LED2µÄÈÎÎñÖ÷Ìå
- * @param   ÎŞ
- * @retval  ÎŞ
- * @author  AngelBeats
- * @version V1.0
- * @date    2020-12-27
- **********************************************************************
- */
-static void LED2_Task(void *paramter) {
+  * @brief   LED2çš„ä»»åŠ¡ä¸»ä½“
+  * @param   æ— 
+  * @retval  æ— 
+  * @author  AngelBeats
+  * @version V1.0
+  * @date    2020-12-27
+  */
+static void LED2_Task(void *paramter)
+{
   while (1)
   {
     HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
