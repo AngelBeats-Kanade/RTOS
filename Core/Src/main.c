@@ -20,12 +20,16 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "adc.h"
+#include "dma.h"
+#include "spi.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lcd.h"
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,14 +49,18 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+__IO uint16_t Current_Temperature;
+uint16_t ADC_ConvertedValue[2];
 
+char displayBuff[100];
+char *pStr;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
-
+void LCD_Init();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -88,9 +96,16 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART1_UART_Init();
+  MX_ADC1_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-
+  __HAL_SPI_ENABLE(&hspi1);
+  ILI9341_Init();
+  LCD_Init();
+  HAL_ADCEx_Calibration_Start(&hadc1);
+  HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&ADC_ConvertedValue,2);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -119,6 +134,7 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -147,10 +163,55 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  HAL_RCC_MCOConfig(RCC_MCO, RCC_MCO1SOURCE_PLLCLK, RCC_MCODIV_1);
 }
 
 /* USER CODE BEGIN 4 */
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void LCD_Init()
+{
+  LCD_SetFont(&Font8x16);
+  LCD_SetColors(MAGENTA, BLACK);
+  ILI9341_Clear(0, 0, LCD_X_LENGTH, LCD_Y_LENGTH);
 
+  LCD_ClearLine(1);
+  ILI9341_DispStringLine_EN(LINE(1), "Platform:STM32F103RCTx");
+
+  Current_Temperature = (1774 - ADC_ConvertedValue[0]) / 5 + 25;
+  sprintf(displayBuff, "IC temperature:%3d `c", Current_Temperature);
+  LCD_ClearLine(2);
+  ILI9341_DispStringLine_EN(LINE(2), displayBuff);
+
+  sprintf(displayBuff, "Flash ID: 0x%lX", SPI_FLASH_ReadID());
+  LCD_ClearLine(3);
+  ILI9341_DispStringLine_EN(LINE(3), displayBuff);
+
+  sprintf(displayBuff, "LCD ID: 0x%X", ILI9341_Read_ID());
+  LCD_ClearLine(4);
+  ILI9341_DispStringLine_EN(LINE(4), displayBuff);
+
+  LCD_SetFont(&Font8x16);
+  LCD_SetTextColor(MAGENTA);
+  pStr = "Written by AngelBeats";
+  sprintf(displayBuff, "%*c%s", ((LCD_X_LENGTH / (((sFONT *) LCD_GetFont())->Width)) - strlen(pStr)) / 2, ' ', pStr);
+  LCD_ClearLine(LINE(16));
+  ILI9341_DispStringLine_EN(LINE(16), displayBuff);
+
+  LCD_SetTextColor(MAGENTA);
+  pStr = "@Rhodes Island";
+  sprintf(displayBuff, "%*c%s", ((LCD_X_LENGTH / (((sFONT *) LCD_GetFont())->Width)) - strlen(pStr)) / 2, ' ', pStr);
+  LCD_ClearLine(LINE(18));
+  ILI9341_DispStringLine_EN(LINE(18), displayBuff);
+}
 /* USER CODE END 4 */
 
 /**

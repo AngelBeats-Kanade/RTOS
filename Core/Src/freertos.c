@@ -27,6 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usart.h"
+#include "lcd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,22 +49,19 @@
 /* USER CODE BEGIN Variables */
 static TaskHandle_t AppTaskCreate_Handle;
 static TaskHandle_t LED1_Task_Handle;
-static TaskHandle_t LED2_Task_Handle;
 
-static StackType_t AppTaskCreate_Stack[256];
+static StackType_t AppTaskCreate_Stack[128];
 static StackType_t LED1_Task_Stack[128];
-static StackType_t LED2_Task_Stack[128];
 
 static StaticTask_t AppTaskCreate_TCB;
 static StaticTask_t LED1_Task_TCB;
-static StaticTask_t LED2_Task_TCB;
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+        .name = "defaultTask",
+        .priority = (osPriority_t) osPriorityNormal,
+        .stack_size = 128 * 4
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -71,9 +69,6 @@ const osThreadAttr_t defaultTask_attributes = {
 static void AppTaskCreate(void);
 
 static void LED1_Task(void *pvParameters);
-
-static void LED2_Task(void *pvParameters);
-
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -85,7 +80,8 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
   * @param  None
   * @retval None
   */
-void MX_FREERTOS_Init(void) {
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -116,14 +112,13 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
-  AppTaskCreate_Handle =
-          xTaskCreateStatic((TaskFunction_t) AppTaskCreate, //任务函数
-                            (const char *) "AppTaskCreate", //任务名称
-                            (uint32_t) 128,                 //任务堆栈大小
-                            (void *) NULL,   //传递给任务函数的参数
-                            (UBaseType_t) 3, //任务优先级
-                            (StackType_t *) AppTaskCreate_Stack,  //任务堆栈
-                            (StaticTask_t *) &AppTaskCreate_TCB); //任务控制块
+  AppTaskCreate_Handle = xTaskCreateStatic((TaskFunction_t) AppTaskCreate,
+                                           (const char *) "AppTaskCreate",
+                                           (uint32_t) 128,
+                                           (void *) NULL,
+                                           (UBaseType_t) 3,
+                                           (StackType_t *) AppTaskCreate_Stack,
+                                           (StaticTask_t *) &AppTaskCreate_TCB);
   if (NULL == AppTaskCreate_Handle)
   {
     Error_Handler();
@@ -164,34 +159,18 @@ static void AppTaskCreate(void)
 {
   taskENTER_CRITICAL(); //进入临界区
 
-  /* 创建LED_Task任务 */
-  LED1_Task_Handle =
-          xTaskCreateStatic((TaskFunction_t) LED1_Task,       //任务函数
-                            (const char *) "LED1_Task",       //任务名称
-                            (uint32_t) 128,                   //任务堆栈大小
-                            (void *) NULL,                    //传递给任务函数的参数
-                            (UBaseType_t) 4,                  //任务优先级
-                            (StackType_t *) LED1_Task_Stack,  //任务堆栈
-                            (StaticTask_t *) &LED1_Task_TCB); //任务控制块
-
-  LED2_Task_Handle =
-          xTaskCreateStatic((TaskFunction_t) LED2_Task,       //任务函数
-                            (const char *) "LED2_Task",       //任务名称
-                            (uint32_t) 128,                   //任务堆栈大小
-                            (void *) NULL,                    //传递给任务函数的参数
-                            (UBaseType_t) 4,                  //任务优先级
-                            (StackType_t *) LED2_Task_Stack,  //任务堆栈
-                            (StaticTask_t *) &LED2_Task_TCB); //任务控制块
+  LED1_Task_Handle = xTaskCreateStatic((TaskFunction_t) LED1_Task,
+                                       (const char *) "LED1_Task",
+                                       (uint32_t) 128,
+                                       (void *) NULL,
+                                       (UBaseType_t) 4,
+                                       (StackType_t *) LED1_Task_Stack,
+                                       (StaticTask_t *) &LED1_Task_TCB);
 
   if (NULL != LED1_Task_Handle)
     printf("LED1_Task任务创建成功!\n");
   else
     printf("LED1_Task任务创建失败!\n");
-
-  if (NULL != LED2_Task_Handle)
-    printf("LED2_Task任务创建成功!\n");
-  else
-    printf("LED2_Task任务创建失败!\n");
 
   vTaskDelete(AppTaskCreate_Handle);
 
@@ -214,25 +193,6 @@ static void LED1_Task(void *paramter)
     osDelay(500);
     HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
     osDelay(500);
-  }
-}
-
-/**
-  * @brief   LED2的任务主体
-  * @param   无
-  * @retval  无
-  * @author  AngelBeats
-  * @version V1.0
-  * @date    2020-12-27
-  */
-static void LED2_Task(void *paramter)
-{
-  while (1)
-  {
-    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
-    osDelay(200);
-    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
-    osDelay(800);
   }
 }
 /* USER CODE END Application */
