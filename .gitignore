@@ -2,6 +2,7 @@ Project4
 .idea
 cmake-build-debug
 CMakeLists.txt
+CMakeLists_template.txt
 .cproject
 .mxproject
 .project
