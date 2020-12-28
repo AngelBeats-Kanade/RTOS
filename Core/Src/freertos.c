@@ -147,16 +147,16 @@ void StartDefaultTask(void *argument)
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 /**
-  * @brief   涓轰簡鏂逛究绠＄悊锛屾墍鏈夌殑浠诲姟鍒涘缓鍑芥暟閮芥斁鍦ㄨ繖涓嚱鏁伴噷闈?
-  * @param   鏃?
-  * @retval  鏃?
+  * @brief   为了方便管理，所有的任务创建函数都放在这个函数里面
+  * @param   无
+  * @retval  无
   * @author  AngelBeats
   * @version V1.0
   * @date    2020-12-27
   */
 static void AppTaskCreate(void)
 {
-  taskENTER_CRITICAL(); //杩涘叆涓寸晫鍖?
+  taskENTER_CRITICAL();
 
   LED1_Task_Handle = xTaskCreateStatic((TaskFunction_t) LED1_Task,
                                        (const char *) "LED1_Task",
@@ -167,9 +167,9 @@ static void AppTaskCreate(void)
                                        (StaticTask_t *) &LED1_Task_TCB);
 
   if (NULL != LED1_Task_Handle)
-    printf("LED1_Task浠诲姟鍒涘缓鎴愬姛!\n");
+    printf("LED1_Task任务创建成功!\n");
   else
-    printf("LED1_Task浠诲姟鍒涘缓澶辫触!\n");
+    printf("LED1_Task任务创建失败!\n");
 
   vTaskDelete(AppTaskCreate_Handle);
 
@@ -177,9 +177,9 @@ static void AppTaskCreate(void)
 }
 
 /**
-  * @brief   LED1鐨勪换鍔′富浣?
-  * @param   鏃?
-  * @retval  鏃?
+  * @brief   LED1的任务主体
+  * @param   无
+  * @retval  无
   * @author  AngelBeats
   * @version V1.0
   * @date    2020-12-27
