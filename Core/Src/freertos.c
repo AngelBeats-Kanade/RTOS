@@ -59,9 +59,9 @@ static StaticTask_t LED1_Task_TCB;
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
-        .name = "defaultTask",
-        .priority = (osPriority_t) osPriorityNormal,
-        .stack_size = 128 * 4
+  .name = "defaultTask",
+  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 128 * 4
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,8 +80,7 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
   * @param  None
   * @retval None
   */
-void MX_FREERTOS_Init(void)
-{
+void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -148,16 +147,16 @@ void StartDefaultTask(void *argument)
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 /**
-  * @brief   为了方便管理，所有的任务创建函数都放在这个函数里面
-  * @param   无
-  * @retval  无
+  * @brief   为了方便管理，所有的任务创建函数都放在这个函数里�?
+  * @param   �?
+  * @retval  �?
   * @author  AngelBeats
   * @version V1.0
   * @date    2020-12-27
   */
 static void AppTaskCreate(void)
 {
-  taskENTER_CRITICAL(); //进入临界区
+  taskENTER_CRITICAL(); //进入临界�?
 
   LED1_Task_Handle = xTaskCreateStatic((TaskFunction_t) LED1_Task,
                                        (const char *) "LED1_Task",
@@ -178,9 +177,9 @@ static void AppTaskCreate(void)
 }
 
 /**
-  * @brief   LED1的任务主体
-  * @param   无
-  * @retval  无
+  * @brief   LED1的任务主�?
+  * @param   �?
+  * @retval  �?
   * @author  AngelBeats
   * @version V1.0
   * @date    2020-12-27

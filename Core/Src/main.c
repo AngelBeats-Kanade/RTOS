@@ -106,6 +106,14 @@ int main(void)
   LCD_Init();
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&ADC_ConvertedValue,2);
+  while (1)
+  {
+    Current_Temperature = (1774 - ADC_ConvertedValue[0]) / 5 + 25;
+    sprintf(displayBuff, "芯片温度为:%3d ℃", Current_Temperature);
+    LCD_ClearLine(4);
+    ILI9341_DispStringLine_EN_CH(LINE(4), displayBuff);
+    HAL_Delay(100);
+  }
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -183,21 +191,23 @@ void LCD_Init()
   LCD_SetColors(MAGENTA, BLACK);
   ILI9341_Clear(0, 0, LCD_X_LENGTH, LCD_Y_LENGTH);
 
-  LCD_ClearLine(1);
-  ILI9341_DispStringLine_EN(LINE(1), "Platform:STM32F103RCTx");
+  ILI9341_DispStringLine_EN_CH(LINE(0), "实验平台：野火MINI开发板");
+  ILI9341_DispStringLine_EN_CH(LINE(1), "LCD大小：3.2寸");
+  ILI9341_DispStringLine_EN_CH(LINE(2), "分辨率：240x320 px");
+  ILI9341_DispStringLine_EN_CH(LINE(3), "ILI9341液晶驱动");
 
   Current_Temperature = (1774 - ADC_ConvertedValue[0]) / 5 + 25;
-  sprintf(displayBuff, "IC temperature:%3d `c", Current_Temperature);
-  LCD_ClearLine(2);
-  ILI9341_DispStringLine_EN(LINE(2), displayBuff);
+  sprintf(displayBuff, "芯片温度为:%3d ℃", Current_Temperature);
+  LCD_ClearLine(4);
+  ILI9341_DispStringLine_EN_CH(LINE(4), displayBuff);
 
   sprintf(displayBuff, "Flash ID: 0x%lX", SPI_FLASH_ReadID());
-  LCD_ClearLine(3);
-  ILI9341_DispStringLine_EN(LINE(3), displayBuff);
+  LCD_ClearLine(5);
+  ILI9341_DispStringLine_EN(LINE(5), displayBuff);
 
   sprintf(displayBuff, "LCD ID: 0x%X", ILI9341_Read_ID());
-  LCD_ClearLine(4);
-  ILI9341_DispStringLine_EN(LINE(4), displayBuff);
+  LCD_ClearLine(6);
+  ILI9341_DispStringLine_EN(LINE(6), displayBuff);
 
   LCD_SetFont(&Font8x16);
   LCD_SetTextColor(MAGENTA);

@@ -37,7 +37,7 @@ void MX_SPI1_Init(void)
   hspi1.Init.Mode = SPI_MODE_MASTER;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
   hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
   hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
@@ -49,17 +49,18 @@ void MX_SPI1_Init(void)
   {
     Error_Handler();
   }
+
 }
 
-void HAL_SPI_MspInit(SPI_HandleTypeDef *spiHandle)
+void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
 {
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-  if (spiHandle->Instance == SPI1)
+  if(spiHandle->Instance==SPI1)
   {
-    /* USER CODE BEGIN SPI1_MspInit 0 */
+  /* USER CODE BEGIN SPI1_MspInit 0 */
 
-    /* USER CODE END SPI1_MspInit 0 */
+  /* USER CODE END SPI1_MspInit 0 */
     /* SPI1 clock enable */
     __HAL_RCC_SPI1_CLK_ENABLE();
 
@@ -70,7 +71,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *spiHandle)
     PA6     ------> SPI1_MISO
     PA7     ------> SPI1_MOSI
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_5 | GPIO_PIN_7;
+    GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_7;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -80,23 +81,23 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *spiHandle)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    /* USER CODE BEGIN SPI1_MspInit 1 */
+  /* USER CODE BEGIN SPI1_MspInit 1 */
     GPIO_InitStruct.Pin = GPIO_PIN_4;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_PULLUP;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-    /* USER CODE END SPI1_MspInit 1 */
+  /* USER CODE END SPI1_MspInit 1 */
   }
 }
 
-void HAL_SPI_MspDeInit(SPI_HandleTypeDef *spiHandle)
+void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
 {
 
-  if (spiHandle->Instance == SPI1)
+  if(spiHandle->Instance==SPI1)
   {
-    /* USER CODE BEGIN SPI1_MspDeInit 0 */
+  /* USER CODE BEGIN SPI1_MspDeInit 0 */
 
-    /* USER CODE END SPI1_MspDeInit 0 */
+  /* USER CODE END SPI1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_SPI1_CLK_DISABLE();
 
@@ -106,11 +107,11 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *spiHandle)
     PA6     ------> SPI1_MISO
     PA7     ------> SPI1_MOSI
     */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7);
 
-    /* USER CODE BEGIN SPI1_MspDeInit 1 */
+  /* USER CODE BEGIN SPI1_MspDeInit 1 */
 
-    /* USER CODE END SPI1_MspDeInit 1 */
+  /* USER CODE END SPI1_MspDeInit 1 */
   }
 }
 
@@ -134,21 +135,21 @@ void SPI_FLASH_SectorErase(uint32_t sectorAddr)
 }
 
 /**
-  * @brief  擦除FLASH扇区，整片擦除
-  * @param  无
-  * @retval 无
+  * @brief  擦除FLASH扇区，整片擦�?
+  * @param  �?
+  * @retval �?
   */
 void SPI_FLASH_BulkErase(void)
 {
-  /* 发送FLASH写使能命令 */
+  /* 发�?�FLASH写使能命�? */
   SPI_FLASH_WriteEnable();
 
   /* 整块 Erase */
-  /* 选择FLASH: CS低电平 */
+  /* 选择FLASH: CS低电�? */
   SPI_FLASH_CS_LOW();
-  /* 发送整块擦除指令*/
+  /* 发�?�整块擦除指�?*/
   SPI_FLASH_SendByte(W25X_ChipErase);
-  /* 停止信号 FLASH: CS 高电平 */
+  /* 停止信号 FLASH: CS 高电�? */
   SPI_FLASH_CS_HIGH();
 
   /* 等待擦除完毕*/
@@ -157,25 +158,25 @@ void SPI_FLASH_BulkErase(void)
 
 /**
   * @brief  对FLASH按页写入数据，调用本函数写入数据前需要先擦除扇区
-  * @param  pBuffer，要写入数据的指针
-  * @param  WriteAddr，写入地址
+  * @param  pBuffer，要写入数据的指�?
+  * @param  WriteAddr，写入地�?
   * @param  NumByteToWrite，写入数据长度，必须小于等于SPI_FLASH_PerWritePageSize
   * @retval None
   */
 void SPI_FLASH_PageWrite(uint8_t *pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite)
 {
-  /* 发送FLASH写使能命令 */
+  /* 发�?�FLASH写使能命�? */
   SPI_FLASH_WriteEnable();
 
-  /* 选择FLASH: CS低电平 */
+  /* 选择FLASH: CS低电�? */
   SPI_FLASH_CS_LOW();
-  /* 写页写指令*/
+  /* 写页写指�?*/
   SPI_FLASH_SendByte(W25X_PageProgram);
-  /*发送写地址的高位*/
+  /*发�?�写地址的高�?*/
   SPI_FLASH_SendByte((WriteAddr & 0xFF0000) >> 16);
-  /*发送写地址的中位*/
+  /*发�?�写地址的中�?*/
   SPI_FLASH_SendByte((WriteAddr & 0xFF00) >> 8);
-  /*发送写地址的低位*/
+  /*发�?�写地址的低�?*/
   SPI_FLASH_SendByte(WriteAddr & 0xFF);
 
   if (NumByteToWrite > SPI_FLASH_PerWritePageSize)
@@ -187,13 +188,13 @@ void SPI_FLASH_PageWrite(uint8_t *pBuffer, uint32_t WriteAddr, uint16_t NumByteT
   /* 写入数据*/
   while (NumByteToWrite--)
   {
-    /* 发送当前要写入的字节数据 */
+    /* 发�?�当前要写入的字节数�? */
     SPI_FLASH_SendByte(*pBuffer);
     /* 指向下一字节数据 */
     pBuffer++;
   }
 
-  /* 停止信号 FLASH: CS 高电平 */
+  /* 停止信号 FLASH: CS 高电�? */
   SPI_FLASH_CS_HIGH();
 
   /* 等待写入完毕*/
@@ -202,9 +203,9 @@ void SPI_FLASH_PageWrite(uint8_t *pBuffer, uint32_t WriteAddr, uint16_t NumByteT
 
 /**
   * @brief  对FLASH写入数据，调用本函数写入数据前需要先擦除扇区
-  * @param  pBuffer，要写入数据的指针
-  * @param  WriteAddr，写入地址
-  * @param  NumByteToWrite，写入数据长度
+  * @param  pBuffer，要写入数据的指�?
+  * @param  WriteAddr，写入地�?
+  * @param  NumByteToWrite，写入数据长�?
   * @retval None
   */
 void SPI_FLASH_BufferWrite(uint8_t *pBuffer, uint32_t WriteAddr, uint16_t NumByteToWrite)
@@ -214,11 +215,11 @@ void SPI_FLASH_BufferWrite(uint8_t *pBuffer, uint32_t WriteAddr, uint16_t NumByt
   /*mod运算求余，若writeAddr是SPI_FLASH_PageSize整数倍，运算结果Addr值为0*/
   Addr = WriteAddr % SPI_FLASH_PageSize;
 
-  /*差count个数据值，刚好可以对齐到页地址*/
+  /*差count个数据�?�，刚好可以对齐到页地址*/
   count = SPI_FLASH_PageSize - Addr;
   /*计算出要写多少整数页*/
   NumOfPage = NumByteToWrite / SPI_FLASH_PageSize;
-  /*mod运算求余，计算出剩余不满一页的字节数*/
+  /*mod运算求余，计算出剩余不满�?页的字节�?*/
   NumOfSingle = NumByteToWrite % SPI_FLASH_PageSize;
 
   /* Addr=0,则WriteAddr 刚好按页对齐 aligned  */
@@ -239,17 +240,17 @@ void SPI_FLASH_BufferWrite(uint8_t *pBuffer, uint32_t WriteAddr, uint16_t NumByt
         pBuffer += SPI_FLASH_PageSize;
       }
 
-      /*若有多余的不满一页的数据，把它写完*/
+      /*若有多余的不满一页的数据，把它写�?*/
       SPI_FLASH_PageWrite(pBuffer, WriteAddr, NumOfSingle);
     }
   }
-    /* 若地址与 SPI_FLASH_PageSize 不对齐  */
+    /* 若地�?�? SPI_FLASH_PageSize 不对�?  */
   else
   {
     /* NumByteToWrite < SPI_FLASH_PageSize */
     if (NumOfPage == 0)
     {
-      /*当前页剩余的count个位置比NumOfSingle小，写不完*/
+      /*当前页剩余的count个位置比NumOfSingle小，写不�?*/
       if (NumOfSingle > count)
       {
         temp = NumOfSingle - count;
@@ -259,10 +260,10 @@ void SPI_FLASH_BufferWrite(uint8_t *pBuffer, uint32_t WriteAddr, uint16_t NumByt
         WriteAddr += count;
         pBuffer += count;
 
-        /*再写剩余的数据*/
+        /*再写剩余的数�?*/
         SPI_FLASH_PageWrite(pBuffer, WriteAddr, temp);
       }
-      else /*当前页剩余的count个位置能写完NumOfSingle个数据*/
+      else /*当前页剩余的count个位置能写完NumOfSingle个数�?*/
       {
         SPI_FLASH_PageWrite(pBuffer, WriteAddr, NumByteToWrite);
       }
@@ -278,14 +279,14 @@ void SPI_FLASH_BufferWrite(uint8_t *pBuffer, uint32_t WriteAddr, uint16_t NumByt
       WriteAddr += count;
       pBuffer += count;
 
-      /*把整数页都写了*/
+      /*把整数页都写�?*/
       while (NumOfPage--)
       {
         SPI_FLASH_PageWrite(pBuffer, WriteAddr, SPI_FLASH_PageSize);
         WriteAddr += SPI_FLASH_PageSize;
         pBuffer += SPI_FLASH_PageSize;
       }
-      /*若有多余的不满一页的数据，把它写完*/
+      /*若有多余的不满一页的数据，把它写�?*/
       if (NumOfSingle != 0)
       {
         SPI_FLASH_PageWrite(pBuffer, WriteAddr, NumOfSingle);
@@ -297,35 +298,35 @@ void SPI_FLASH_BufferWrite(uint8_t *pBuffer, uint32_t WriteAddr, uint16_t NumByt
 /**
   * @brief   读取FLASH数据
   * @param 	pBuffer，存储读出数据的指针
-  * @param   ReadAddr，读取地址
-  * @param   NumByteToRead，读取数据长度
+  * @param   ReadAddr，读取地�?
+  * @param   NumByteToRead，读取数据长�?
   * @retval  None
   */
 void SPI_FLASH_BufferRead(uint8_t *pBuffer, uint32_t ReadAddr, uint16_t NumByteToRead)
 {
-  /* 选择FLASH: CS低电平 */
+  /* 选择FLASH: CS低电�? */
   SPI_FLASH_CS_LOW();
 
-  /* 发送 读 指令 */
+  /* 发�?? �? 指令 */
   SPI_FLASH_SendByte(W25X_ReadData);
 
-  /* 发送 读 地址高位 */
+  /* 发�?? �? 地址高位 */
   SPI_FLASH_SendByte((ReadAddr & 0xFF0000) >> 16);
-  /* 发送 读 地址中位 */
+  /* 发�?? �? 地址中位 */
   SPI_FLASH_SendByte((ReadAddr & 0xFF00) >> 8);
-  /* 发送 读 地址低位 */
+  /* 发�?? �? 地址低位 */
   SPI_FLASH_SendByte(ReadAddr & 0xFF);
 
   /* 读取数据 */
   while (NumByteToRead--)
   {
-    /* 读取一个字节*/
+    /* 读取�?个字�?*/
     *pBuffer = SPI_FLASH_SendByte(Dummy_Byte);
     /* 指向下一个字节缓冲区 */
     pBuffer++;
   }
 
-  /* 停止信号 FLASH: CS 高电平 */
+  /* 停止信号 FLASH: CS 高电�? */
   SPI_FLASH_CS_HIGH();
 }
 
@@ -338,25 +339,25 @@ uint32_t SPI_FLASH_ReadID(void)
 {
   uint32_t Temp = 0, Temp0 = 0, Temp1 = 0, Temp2 = 0;
 
-  /* 开始通讯：CS低电平 */
+  /* �?始�?�讯：CS低电�? */
   SPI_FLASH_CS_LOW();
 
-  /* 发送JEDEC指令，读取ID */
+  /* 发�?�JEDEC指令，读取ID */
   SPI_FLASH_SendByte(W25X_JedecDeviceID);
 
-  /* 读取一个字节数据 */
+  /* 读取�?个字节数�? */
   Temp0 = SPI_FLASH_SendByte(Dummy_Byte);
 
-  /* 读取一个字节数据 */
+  /* 读取�?个字节数�? */
   Temp1 = SPI_FLASH_SendByte(Dummy_Byte);
 
-  /* 读取一个字节数据 */
+  /* 读取�?个字节数�? */
   Temp2 = SPI_FLASH_SendByte(Dummy_Byte);
 
-  /* 停止通讯：CS高电平 */
+  /* 停止通讯：CS高电�? */
   SPI_FLASH_CS_HIGH();
 
-  /*把数据组合起来，作为函数的返回值*/
+  /*把数据组合起来，作为函数的返回�??*/
   Temp = (Temp0 << 16) | (Temp1 << 8) | Temp2;
 
   return Temp;
@@ -418,8 +419,8 @@ void SPI_FLASH_StartReadSequence(uint32_t ReadAddr)
 }
 
 /**
-  * @brief  使用SPI读取一个字节的数据
-  * @param  无
+  * @brief  使用SPI读取�?个字节的数据
+  * @param  �?
   * @retval 返回接收到的数据
   */
 uint8_t SPI_FLASH_ReadByte(void)
@@ -428,8 +429,8 @@ uint8_t SPI_FLASH_ReadByte(void)
 }
 
 /**
-  * @brief  使用SPI发送一个字节的数据
-  * @param  byte：要发送的数据
+  * @brief  使用SPI发�?�一个字节的数据
+  * @param  byte：要发�?�的数据
   * @retval 返回接收到的数据
   */
 uint8_t SPI_FLASH_SendByte(uint8_t byte)
@@ -489,7 +490,7 @@ uint16_t SPI_FLASH_SendHalfWord(uint16_t HalfWord)
 }
 
 /**
-  * @brief  向FLASH发送 写使能 命令
+  * @brief  向FLASH发�?? 写使�? 命令
   * @param  None
   * @retval None
   */
@@ -542,7 +543,7 @@ void SPI_Flash_PowerDown(void)
   * @param  None
   * @retval None
   */
-void SPI_Flash_WAKE_UP(void)
+void SPI_Flash_WAKEUP(void)
 {
   SPI_FLASH_CS_LOW();
   SPI_FLASH_SendByte(W25X_ReleasePowerDown);
