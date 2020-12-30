@@ -28,7 +28,6 @@
 /* USER CODE BEGIN Includes */
 #include "usart.h"
 #include "lcd.h"
-#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +51,8 @@ extern __IO uint16_t Current_Temperature;
 extern uint16_t ADC_ConvertedValue[2];
 char buff0[30];
 char buff1[30];
+char flag;
+char everDisplay = 0;
 __IO float adcValue;
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
@@ -201,9 +202,14 @@ void LED1_Task(void *argument)
   /* Infinite loop */
   for (;;)
   {
-    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-    osDelay(500);
-    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+    if (flag == 0)
+    {
+      HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+    }
+    else
+    {
+      HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+    }
     osDelay(500);
   }
   /* USER CODE END LED1_Task */
@@ -282,15 +288,27 @@ void Beep_Task(void *argument)
     if (adcValue >= 3.0)
     {
       HAL_GPIO_WritePin(BEEP_GPIO_Port, BEEP_Pin, GPIO_PIN_SET);
-      ILI9341_DispStringLine_EN(LINE(13), "Danger! Danger! Danger!");
+      if (everDisplay == 0)
+      {
+        everDisplay = 1;
+        LCD_ClearLine(LINE(13));
+      }
+      ILI9341_DispStringLine_EN_CH(LINE(13), "Î£ÏÕ£¡Î£ÏÕ£¡Î£ÏÕ£¡");
     }
     else if (adcValue >= 2.0)
     {
+      flag = 1;
       HAL_GPIO_WritePin(BEEP_GPIO_Port, BEEP_Pin, GPIO_PIN_RESET);
-      ILI9341_DispStringLine_EN(LINE(13), "Alerm! Volatge too high!");
+      if (everDisplay == 1)
+      {
+        everDisplay = 0;
+        LCD_ClearLine(LINE(13));
+      }
+      ILI9341_DispStringLine_EN_CH(LINE(13), "¾¯¸æ! µçÑ¹¹ý¸ß!");
     }
     else
     {
+      flag = 0;
       LCD_ClearLine(LINE(13));
     }
 
@@ -312,7 +330,15 @@ void LED2_Task(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    if (flag == 1)
+    {
+      HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+    }
+    else
+    {
+      HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
+    }
+    osDelay(200);
   }
   /* USER CODE END LED2_Task */
 }
