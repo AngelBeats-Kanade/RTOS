@@ -222,13 +222,15 @@ void LCD_Init()
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
-
+  
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM6) {
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
+  if (htim->Instance == TIM7) {
+    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+  }
   /* USER CODE END Callback 1 */
 }
 

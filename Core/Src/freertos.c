@@ -28,6 +28,7 @@
 /* USER CODE BEGIN Includes */
 #include "usart.h"
 #include "lcd.h"
+#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,6 +51,7 @@
 extern __IO uint16_t Current_Temperature;
 extern uint16_t ADC_ConvertedValue[2];
 char buff0[30];
+char buff1[30];
 __IO float adcValue;
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
@@ -73,6 +75,27 @@ const osThreadAttr_t LCDTask01_attributes = {
   .priority = (osPriority_t) osPriorityRealtime1,
   .stack_size = 128 * 4
 };
+/* Definitions for LCDTask02 */
+osThreadId_t LCDTask02Handle;
+const osThreadAttr_t LCDTask02_attributes = {
+  .name = "LCDTask02",
+  .priority = (osPriority_t) osPriorityRealtime2,
+  .stack_size = 128 * 4
+};
+/* Definitions for BeepTask */
+osThreadId_t BeepTaskHandle;
+const osThreadAttr_t BeepTask_attributes = {
+  .name = "BeepTask",
+  .priority = (osPriority_t) osPriorityRealtime7,
+  .stack_size = 128 * 4
+};
+/* Definitions for LED2Task */
+osThreadId_t LED2TaskHandle;
+const osThreadAttr_t LED2Task_attributes = {
+  .name = "LED2Task",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -82,6 +105,9 @@ const osThreadAttr_t LCDTask01_attributes = {
 void StartDefaultTask(void *argument);
 void LED1_Task(void *argument);
 void LCD_Task1(void *argument);
+void LCD_Task2(void *argument);
+void Beep_Task(void *argument);
+void LED2_Task(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -121,6 +147,15 @@ void MX_FREERTOS_Init(void) {
   /* creation of LCDTask01 */
   LCDTask01Handle = osThreadNew(LCD_Task1, NULL, &LCDTask01_attributes);
 
+  /* creation of LCDTask02 */
+  LCDTask02Handle = osThreadNew(LCD_Task2, NULL, &LCDTask02_attributes);
+
+  /* creation of BeepTask */
+  BeepTaskHandle = osThreadNew(Beep_Task, NULL, &BeepTask_attributes);
+
+  /* creation of LED2Task */
+  LED2TaskHandle = osThreadNew(LED2_Task, NULL, &LED2Task_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -152,9 +187,9 @@ void StartDefaultTask(void *argument)
 
 /* USER CODE BEGIN Header_LED1_Task */
 /**
-  * @brief   LED1任务函数主体
-  * @param   argument: 不使用
-  * @retval  无
+  * @brief   Function implementing the LED1Task thread.
+  * @param   argument: Not used
+  * @retval  None
   * @author  AngelBeats
   * @version V1.0
   * @date    2020-12-30
@@ -176,9 +211,9 @@ void LED1_Task(void *argument)
 
 /* USER CODE BEGIN Header_LCD_Task1 */
 /**
-  * @brief   LCD任务1
-  * @param   argument: 不使用
-  * @retval  无
+  * @brief   Function implementing the LCDTask01 thread.
+  * @param   argument: Not used
+  * @retval  None
   * @author  AngelBeats
   * @version V1.0
   * @date    2020-12-30
@@ -197,6 +232,89 @@ void LCD_Task1(void *argument)
     osDelay(200);
   }
   /* USER CODE END LCD_Task1 */
+}
+
+/* USER CODE BEGIN Header_LCD_Task2 */
+/**
+  * @brief   Function implementing the LCDTask02 thread.
+  * @param   argument: Not used
+  * @retval  None
+  * @version V1.0
+  * @date    2020-12-30
+  */
+/* USER CODE END Header_LCD_Task2 */
+void LCD_Task2(void *argument)
+{
+  /* USER CODE BEGIN LCD_Task2 */
+  /* Infinite loop */
+  for(;;)
+  {
+    adcValue = (float)ADC_ConvertedValue[1] / 4096 * 3.3;
+    uint16_t units_place, tenth, hundredth, thousandth, ten_thousandth;
+    units_place = (uint16_t)adcValue;
+    tenth = (uint16_t)(10 * (adcValue - units_place));
+    hundredth = (uint16_t)(100 * (adcValue - units_place) - 10 * tenth);
+    thousandth = (uint16_t)(1000 * (adcValue - units_place) - 100 * tenth - 10 * hundredth);
+    ten_thousandth = (uint16_t)(10000 * (adcValue - units_place) - 1000 * tenth - 100 * hundredth - 10 * thousandth);
+    sprintf(buff1, "Current volatge: %1d.%1d%1d%1d%1d V", units_place, tenth, hundredth, thousandth, ten_thousandth);
+    ILI9341_DispStringLine_EN(LINE(11), buff1);
+
+    osDelay(200);
+  }
+  /* USER CODE END LCD_Task2 */
+}
+
+/* USER CODE BEGIN Header_Beep_Task */
+/**
+  * @brief   Function implementing the BeepTask thread.
+  * @param   argument: Not used
+  * @retval  None
+  * @version V1.0
+  * @date    2020-12-30
+  */
+/* USER CODE END Header_Beep_Task */
+void Beep_Task(void *argument)
+{
+  /* USER CODE BEGIN Beep_Task */
+  /* Infinite loop */
+  for(;;)
+  {
+    if (adcValue >= 3.0)
+    {
+      HAL_GPIO_WritePin(BEEP_GPIO_Port, BEEP_Pin, GPIO_PIN_SET);
+      ILI9341_DispStringLine_EN(LINE(13), "Danger! Danger! Danger!");
+    }
+    else if (adcValue >= 2.0)
+    {
+      HAL_GPIO_WritePin(BEEP_GPIO_Port, BEEP_Pin, GPIO_PIN_RESET);
+      ILI9341_DispStringLine_EN(LINE(13), "Alerm! Volatge too high!");
+    }
+    else
+    {
+      LCD_ClearLine(LINE(13));
+    }
+
+    osDelay(100);
+  }
+  /* USER CODE END Beep_Task */
+}
+
+/* USER CODE BEGIN Header_LED2_Task */
+/**
+* @brief Function implementing the LED2Task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_LED2_Task */
+void LED2_Task(void *argument)
+{
+  /* USER CODE BEGIN LED2_Task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END LED2_Task */
 }
 
 /* Private application code --------------------------------------------------*/
