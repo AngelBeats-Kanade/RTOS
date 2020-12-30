@@ -28,6 +28,7 @@
 /* USER CODE BEGIN Includes */
 #include "usart.h"
 #include "lcd.h"
+#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -97,6 +98,13 @@ const osThreadAttr_t LED2Task_attributes = {
   .priority = (osPriority_t) osPriorityLow,
   .stack_size = 128 * 4
 };
+/* Definitions for TPADTask */
+osThreadId_t TPADTaskHandle;
+const osThreadAttr_t TPADTask_attributes = {
+  .name = "TPADTask",
+  .priority = (osPriority_t) osPriorityRealtime6,
+  .stack_size = 128 * 4
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -109,6 +117,7 @@ void LCD_Task1(void *argument);
 void LCD_Task2(void *argument);
 void Beep_Task(void *argument);
 void LED2_Task(void *argument);
+void TPAD_Task(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -156,6 +165,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of LED2Task */
   LED2TaskHandle = osThreadNew(LED2_Task, NULL, &LED2Task_attributes);
+
+  /* creation of TPADTask */
+  TPADTaskHandle = osThreadNew(TPAD_Task, NULL, &TPADTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -341,6 +353,29 @@ void LED2_Task(void *argument)
     osDelay(200);
   }
   /* USER CODE END LED2_Task */
+}
+
+/* USER CODE BEGIN Header_TPAD_Task */
+/**
+* @brief Function implementing the TPADTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_TPAD_Task */
+void TPAD_Task(void *argument)
+{
+  /* USER CODE BEGIN TPAD_Task */
+  /* Infinite loop */
+  for(;;)
+  {
+    if (TPAD_Scan(0))
+    {
+      ILI9341_DispStringLine_EN_CH(LINE(14), "µçÈÝ°´¼ü¼ì²âµ½´¥Ãþ!");
+    }
+    osDelay(100);
+    LCD_ClearLine(LINE(14));
+  }
+  /* USER CODE END TPAD_Task */
 }
 
 /* Private application code --------------------------------------------------*/
