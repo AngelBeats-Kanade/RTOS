@@ -26,7 +26,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "adc.h"
 #include "usart.h"
 #include "lcd.h"
 /* USER CODE END Includes */
@@ -49,30 +48,30 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 extern __IO uint16_t Current_Temperature;
-extern __IO float adcValue;
 extern uint16_t ADC_ConvertedValue[2];
 char buff0[30];
+__IO float adcValue;
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
-        .name = "defaultTask",
-        .priority = (osPriority_t) osPriorityNormal,
-        .stack_size = 128 * 4
+  .name = "defaultTask",
+  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 128 * 4
 };
 /* Definitions for LED1Task */
 osThreadId_t LED1TaskHandle;
 const osThreadAttr_t LED1Task_attributes = {
-        .name = "LED1Task",
-        .priority = (osPriority_t) osPriorityLow,
-        .stack_size = 128 * 4
+  .name = "LED1Task",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
 };
 /* Definitions for LCDTask01 */
 osThreadId_t LCDTask01Handle;
 const osThreadAttr_t LCDTask01_attributes = {
-        .name = "LCDTask01",
-        .priority = (osPriority_t) osPriorityRealtime1,
-        .stack_size = 128 * 4
+  .name = "LCDTask01",
+  .priority = (osPriority_t) osPriorityRealtime1,
+  .stack_size = 128 * 4
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -81,9 +80,7 @@ const osThreadAttr_t LCDTask01_attributes = {
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
-
 void LED1_Task(void *argument);
-
 void LCD_Task1(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -93,8 +90,7 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
   * @param  None
   * @retval None
   */
-void MX_FREERTOS_Init(void)
-{
+void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -171,10 +167,8 @@ void LED1_Task(void *argument)
   for (;;)
   {
     HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-    printf("LED1 off!\n");
     osDelay(500);
     HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-    printf("LED1 on!\n");
     osDelay(500);
   }
   /* USER CODE END LED1_Task */
