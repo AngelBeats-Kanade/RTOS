@@ -50,8 +50,7 @@
 
 /* USER CODE BEGIN PV */
 __IO uint16_t Current_Temperature;
-__IO float adcValue;
-uint16_t ADC_ConvertedValue[2];
+uint32_t ADC_ConvertedValue[2];
 
 char displayBuff[100];
 char *pStr;
@@ -106,7 +105,7 @@ int main(void)
   ILI9341_Init();
   LCD_Init();
   HAL_ADCEx_Calibration_Start(&hadc1);
-  HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&ADC_ConvertedValue,2);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t *) &ADC_ConvertedValue, 2);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -184,11 +183,10 @@ void LCD_Init()
   LCD_SetColors(MAGENTA, BLACK);
   ILI9341_Clear(0, 0, LCD_X_LENGTH, LCD_Y_LENGTH);
 
-  ILI9341_DispStringLine_EN_CH(LINE(2), "平台:STM32F103RCTx");
-  ILI9341_DispStringLine_EN_CH(LINE(3), "LCD大小：3.2寸");
-  ILI9341_DispStringLine_EN_CH(LINE(4), "分辨率：240x320 px");
-  ILI9341_DispStringLine_EN_CH(LINE(5), "ILI9341液晶驱动");
-
+  ILI9341_DispStringLine_EN_CH(LINE(2), "Platform: STM32F103RCTx");
+  ILI9341_DispStringLine_EN_CH(LINE(3), "LCD: 3.2inch");
+  ILI9341_DispStringLine_EN_CH(LINE(4), "Screen solution: 240x320 px");
+  ILI9341_DispStringLine_EN_CH(LINE(5), "Driven by ILI9341");
 
   sprintf(displayBuff, "Flash ID: 0x%lX", SPI_FLASH_ReadID());
   LCD_ClearLine(6);
@@ -213,6 +211,27 @@ void LCD_Init()
 }
 /* USER CODE END 4 */
 
+ /**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM6 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM6) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
+
 /**
   * @brief  This function is executed in case of error occurrence.
   * @retval None
@@ -224,6 +243,8 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+    HAL_Delay(200);
   }
   /* USER CODE END Error_Handler_Debug */
 }

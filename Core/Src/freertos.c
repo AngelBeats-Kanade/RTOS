@@ -26,6 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "adc.h"
 #include "usart.h"
 #include "lcd.h"
 /* USER CODE END Includes */
@@ -50,23 +51,7 @@
 extern __IO uint16_t Current_Temperature;
 extern __IO float adcValue;
 extern uint16_t ADC_ConvertedValue[2];
-char dispBuff_0[10];
-char dispBuff_1[10];
-
-static TaskHandle_t AppTaskCreate_Handle;
-static TaskHandle_t LED1_Task_Handle;
-static TaskHandle_t LCD_Task1_Handle;
-static TaskHandle_t LCD_Task2_Handle;
-
-static StackType_t AppTaskCreate_Stack[256];
-static StackType_t LED1_Task_Stack[128];
-static StackType_t LCD_Task1_Stack[128];
-static StackType_t LCD_Task2_Stack[256];
-
-static StaticTask_t AppTaskCreate_TCB;
-static StaticTask_t LED1_Task_TCB;
-static StaticTask_t LCD_Task1_TCB;
-static StaticTask_t LCD_Task2_TCB;
+char buff0[30];
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -75,19 +60,31 @@ const osThreadAttr_t defaultTask_attributes = {
         .priority = (osPriority_t) osPriorityNormal,
         .stack_size = 128 * 4
 };
+/* Definitions for LED1Task */
+osThreadId_t LED1TaskHandle;
+const osThreadAttr_t LED1Task_attributes = {
+        .name = "LED1Task",
+        .priority = (osPriority_t) osPriorityLow,
+        .stack_size = 128 * 4
+};
+/* Definitions for LCDTask01 */
+osThreadId_t LCDTask01Handle;
+const osThreadAttr_t LCDTask01_attributes = {
+        .name = "LCDTask01",
+        .priority = (osPriority_t) osPriorityRealtime1,
+        .stack_size = 128 * 4
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-static void AppTaskCreate(void);
 
-static void LED1_Task(void *pvParameters);
-
-static void LCD_Task1(void *pvParameters);
-
-static void LCD_Task2(void *pvParameters);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
+
+void LED1_Task(void *argument);
+
+void LCD_Task1(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -122,23 +119,19 @@ void MX_FREERTOS_Init(void)
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
+  /* creation of LED1Task */
+  LED1TaskHandle = osThreadNew(LED1_Task, NULL, &LED1Task_attributes);
+
+  /* creation of LCDTask01 */
+  LCDTask01Handle = osThreadNew(LCD_Task1, NULL, &LCDTask01_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
-  AppTaskCreate_Handle = xTaskCreateStatic((TaskFunction_t) AppTaskCreate,
-                                           (const char *) "AppTaskCreate",
-                                           (uint32_t) 256,
-                                           (void *) NULL,
-                                           (UBaseType_t) 3,
-                                           (StackType_t *) AppTaskCreate_Stack,
-                                           (StaticTask_t *) &AppTaskCreate_TCB);
-  if (NULL == AppTaskCreate_Handle)
-  {
-    Error_Handler();
-  }
+
   /* USER CODE END RTOS_EVENTS */
 
 }
@@ -161,122 +154,60 @@ void StartDefaultTask(void *argument)
   /* USER CODE END StartDefaultTask */
 }
 
-/* Private application code --------------------------------------------------*/
-/* USER CODE BEGIN Application */
+/* USER CODE BEGIN Header_LED1_Task */
 /**
-  * @brief   Œ™¡À∑Ω±„π‹¿Ì£¨À˘”–µƒ»ŒŒÒ¥¥Ω®∫Ø ˝∂º∑≈‘⁄’‚∏ˆ∫Ø ˝¿Ô√Ê
-  * @param   Œﬁ
-  * @retval  Œﬁ
+  * @brief   LED1‰ªªÂä°ÂáΩÊï∞‰∏ª‰Ωì
+  * @param   argument: ‰∏ç‰ΩøÁî®
+  * @retval  Êó†
   * @author  AngelBeats
   * @version V1.0
-  * @date    2020-12-27
+  * @date    2020-12-30
   */
-static void AppTaskCreate(void)
+/* USER CODE END Header_LED1_Task */
+void LED1_Task(void *argument)
 {
-  taskENTER_CRITICAL();
-
-  LED1_Task_Handle = xTaskCreateStatic((TaskFunction_t) LED1_Task,
-                                       (const char *) "LED1_Task",
-                                       (uint32_t) 128,
-                                       (void *) NULL,
-                                       (UBaseType_t) 4,
-                                       (StackType_t *) LED1_Task_Stack,
-                                       (StaticTask_t *) &LED1_Task_TCB);
-
-  LCD_Task1_Handle = xTaskCreateStatic((TaskFunction_t)LCD_Task1,
-                                       (const char *) "LCD_Task1",
-                                       (uint32_t) 128,
-                                       (void *) NULL,
-                                       (UBaseType_t) 5,
-                                       (StackType_t *) LCD_Task1_Stack,
-                                       (StaticTask_t *) &LCD_Task1_TCB);
-
-//  LCD_Task2_Handle = xTaskCreateStatic((TaskFunction_t)LCD_Task2,
-//                                       (const char *) "LCD_Task2",
-//                                       (uint32_t) 256,
-//                                       (void *) NULL,
-//                                       (UBaseType_t) 5,
-//                                       (StackType_t *) LCD_Task2_Stack,
-//                                       (StaticTask_t *) &LCD_Task2_TCB);
-
-  if (NULL != LED1_Task_Handle)
-    printf("LED1_Task»ŒŒÒ¥¥Ω®≥…π¶!\n");
-  else
-    printf("LED1_Task»ŒŒÒ¥¥Ω® ß∞‹!\n");
-
-  if (NULL != LCD_Task1_Handle)
-    printf("LCD_Task1»ŒŒÒ¥¥Ω®≥…π¶!\n");
-  else
-    printf("LCD_Task1»ŒŒÒ¥¥Ω® ß∞‹!\n");
-
-  if (NULL != LCD_Task2_Handle)
-    printf("LCD_Task2»ŒŒÒ¥¥Ω®≥…π¶!\n");
-  else
-    printf("LCD_Task2»ŒŒÒ¥¥Ω® ß∞‹!\n");
-
-  vTaskDelete(AppTaskCreate_Handle);
-
-  taskEXIT_CRITICAL();
-}
-
-/**
-  * @brief   LED1µƒ»ŒŒÒ÷˜ÃÂ
-  * @param   Œﬁ
-  * @retval  Œﬁ
-  * @author  AngelBeats
-  * @version V1.0
-  * @date    2020-12-27
-  */
-static void LED1_Task(void *pvParameters)
-{
-  while (1)
+  /* USER CODE BEGIN LED1_Task */
+  /* Infinite loop */
+  for (;;)
   {
     HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+    printf("LED1 off!\n");
     osDelay(500);
     HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+    printf("LED1 on!\n");
     osDelay(500);
   }
+  /* USER CODE END LED1_Task */
 }
 
+/* USER CODE BEGIN Header_LCD_Task1 */
 /**
-  * @brief   LCDµƒ»ŒŒÒ1
-  * @param   Œﬁ
-  * @retval  Œﬁ
+  * @brief   LCD‰ªªÂä°1
+  * @param   argument: ‰∏ç‰ΩøÁî®
+  * @retval  Êó†
   * @author  AngelBeats
   * @version V1.0
-  * @date    2020-12-28
+  * @date    2020-12-30
   */
-static void LCD_Task1(void *pvParameters)
+/* USER CODE END Header_LCD_Task1 */
+void LCD_Task1(void *argument)
 {
-  while (1)
+  /* USER CODE BEGIN LCD_Task1 */
+  /* Infinite loop */
+  for (;;)
   {
     Current_Temperature = (1774 - ADC_ConvertedValue[0]) / 5 + 25;
-    sprintf(dispBuff_0,"%3d°Ê",Current_Temperature);
-    ILI9341_DispStringLine_EN_CH(LINE(10), dispBuff_0);
+    sprintf(buff0, "Current temperature: %3d `c", Current_Temperature);
+    ILI9341_DispStringLine_EN(LINE(10), buff0);
 
     osDelay(200);
   }
+  /* USER CODE END LCD_Task1 */
 }
 
-/**
-  * @brief   LCDµƒ»ŒŒÒ2
-  * @param   Œﬁ
-  * @retval  Œﬁ
-  * @author  AngelBeats
-  * @version V1.0
-  * @date    2020-12-28
-  */
-static void LCD_Task2(void *pvParameters)
-{
-  while (1)
-  {
-    adcValue = (float) ADC_ConvertedValue[1] / 4096 * (float) 3.3;
-    sprintf(dispBuff_1,"%.4fV",adcValue);
-    ILI9341_DispStringLine_EN_CH(LINE(11), dispBuff_1);
+/* Private application code --------------------------------------------------*/
+/* USER CODE BEGIN Application */
 
-    osDelay(200);
-  }
-}
 /* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
