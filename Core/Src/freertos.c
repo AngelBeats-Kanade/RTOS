@@ -261,24 +261,26 @@ void LCD_Task1(void *argument)
   * @date    2020-12-30
   * @note    Traditional printf and sprintf cost too many
   *          stacks to process float numbers. So I choose
-  *          turnning float to int. If using printf specially
-  *          optimized fot embeded projcet, it can be avoided.
+  *          turning float to int. However, this task
+  *          couldn't`t work in Ubuntu. If using printf
+  *          specially optimized fot embedded project,
+  *          it can be avoided.
   */
 /* USER CODE END Header_LCD_Task2 */
 void LCD_Task2(void *argument)
 {
   /* USER CODE BEGIN LCD_Task2 */
   /* Infinite loop */
-  for(;;)
+  for (;;)
   {
-    adcValue = (float)ADC_ConvertedValue[1] / 4096 * 3.3;
+    adcValue = (float) ADC_ConvertedValue[1] / 4096 * 3.3;
     uint16_t units_place, tenth, hundredth, thousandth, ten_thousandth;
-    units_place = (uint16_t)adcValue;
-    tenth = (uint16_t)(10 * (adcValue - units_place));
-    hundredth = (uint16_t)(100 * (adcValue - units_place) - 10 * tenth);
-    thousandth = (uint16_t)(1000 * (adcValue - units_place) - 100 * tenth - 10 * hundredth);
-    ten_thousandth = (uint16_t)(10000 * (adcValue - units_place) - 1000 * tenth - 100 * hundredth - 10 * thousandth);
-    sprintf(buff1, "Current volatge: %1d.%1d%1d%1d%1d V", units_place, tenth, hundredth, thousandth, ten_thousandth);
+    units_place = (uint16_t) adcValue;
+    tenth = (uint16_t) (10 * (adcValue - units_place));
+    hundredth = (uint16_t) (100 * (adcValue - units_place) - 10 * tenth);
+    thousandth = (uint16_t) (1000 * (adcValue - units_place) - 100 * tenth - 10 * hundredth);
+    ten_thousandth = (uint16_t) (10000 * (adcValue - units_place) - 1000 * tenth - 100 * hundredth - 10 * thousandth);
+    sprintf(buff1, "Current voltage: %1d.%1d%1d%1d%1d V", units_place, tenth, hundredth, thousandth, ten_thousandth);
     ILI9341_DispStringLine_EN(LINE(11), buff1);
 
     osDelay(200);
@@ -299,7 +301,7 @@ void Beep_Task(void *argument)
 {
   /* USER CODE BEGIN Beep_Task */
   /* Infinite loop */
-  for(;;)
+  for (;;)
   {
     if (adcValue >= 3.0)
     {
@@ -311,7 +313,7 @@ void Beep_Task(void *argument)
         LCD_ClearLine(LINE(13));
         LCD_ClearLine(LINE(14));
       }
-      ILI9341_DispStringLine_EN_CH(LINE(13), "Î£ÏÕ£¡Î£ÏÕ£¡Î£ÏÕ£¡ ");
+      ILI9341_DispStringLine_EN_CH(LINE(13), "Alarm! Voltage too high!");
     }
     else if (adcValue >= 2.0)
     {
@@ -324,7 +326,7 @@ void Beep_Task(void *argument)
         LCD_ClearLine(LINE(13));
         LCD_ClearLine(LINE(14));
       }
-      ILI9341_DispStringLine_EN_CH(LINE(13), "¾¯¸æ£¡µçÑ¹¹ý¸ß£¡ ");
+      ILI9341_DispStringLine_EN_CH(LINE(13), "Danger! Danger! Danger!");
     }
     else
     {
@@ -352,7 +354,7 @@ void LED2_Task(void *argument)
 {
   /* USER CODE BEGIN LED2_Task */
   /* Infinite loop */
-  for(;;)
+  for (;;)
   {
     if (flag == 1)
     {
@@ -378,12 +380,12 @@ void TPAD_Task(void *argument)
 {
   /* USER CODE BEGIN TPAD_Task */
   /* Infinite loop */
-  for(;;)
+  for (;;)
   {
     char TPAD_flag = 0;
     if (TPAD_Scan(0))
     {
-      ILI9341_DispStringLine_EN_CH(LINE(14), "µçÈÝ°´¼ü¼ì²âµ½´¥Ãþ£¡ ");
+      ILI9341_DispStringLine_EN_CH(LINE(14), "TPAD touched!");
       TPAD_flag = 1;
     }
     osDelay(100);
