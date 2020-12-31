@@ -303,9 +303,11 @@ void Beep_Task(void *argument)
       if (everDisplay == 0)
       {
         everDisplay = 1;
+        LCD_ClearLine(LINE(12));
         LCD_ClearLine(LINE(13));
+        LCD_ClearLine(LINE(14));
       }
-      ILI9341_DispStringLine_EN_CH(LINE(13), "Î£ÏÕ£¡Î£ÏÕ£¡Î£ÏÕ£¡");
+      ILI9341_DispStringLine_EN_CH(LINE(13), "Î£ÏÕ£¡Î£ÏÕ£¡Î£ÏÕ£¡ ");
     }
     else if (adcValue >= 2.0)
     {
@@ -314,9 +316,11 @@ void Beep_Task(void *argument)
       if (everDisplay == 1)
       {
         everDisplay = 0;
+        LCD_ClearLine(LINE(12));
         LCD_ClearLine(LINE(13));
+        LCD_ClearLine(LINE(14));
       }
-      ILI9341_DispStringLine_EN_CH(LINE(13), "¾¯¸æ! µçÑ¹¹ý¸ß!");
+      ILI9341_DispStringLine_EN_CH(LINE(13), "¾¯¸æ£¡µçÑ¹¹ý¸ß£¡ ");
     }
     else
     {
@@ -375,13 +379,14 @@ void TPAD_Task(void *argument)
     char TPAD_flag = 0;
     if (TPAD_Scan(0))
     {
-      ILI9341_DispStringLine_EN_CH(LINE(14), "µçÈÝ°´¼ü¼ì²âµ½´¥Ãþ!");
+      ILI9341_DispStringLine_EN_CH(LINE(14), "µçÈÝ°´¼ü¼ì²âµ½´¥Ãþ£¡ ");
       TPAD_flag = 1;
     }
     osDelay(100);
     if (TPAD_flag == 1)
     {
       TPAD_flag = 0;
+      LCD_ClearLine(LINE(13));
       LCD_ClearLine(LINE(14));
     }
   }
