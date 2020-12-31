@@ -2,6 +2,7 @@
 My FreeRTOS to drive stm32.Including ADC, DMA, FLASH, LCD, SPI, USART, TIM. LCD driven by ILI9341, can display Chinese. Not including global interrupt and animation functions. Now I`m thinking about migrating it to stm32h743.
 
 ### 目录
+```
 ├─ .gitignore
 ├─ LICENSE
 ├─ Project4.ioc
@@ -165,6 +166,7 @@ My FreeRTOS to drive stm32.Including ADC, DMA, FLASH, LCD, SPI, USART, TIM. LCD 
 │                          heap_3.c
 └─startup //启动文件
         startup_stm32f103xe.s
+```
 
 ### To-do List
 
