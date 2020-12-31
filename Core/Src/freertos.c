@@ -261,8 +261,7 @@ void LCD_Task1(void *argument)
   * @date    2020-12-30
   * @note    Traditional printf and sprintf cost too many
   *          stacks to process float numbers. So I choose
-  *          turning float to int. However, this task
-  *          couldn't`t work in Ubuntu. If using printf
+  *          turning float to int. If using printf
   *          specially optimized fot embedded project,
   *          it can be avoided.
   */
@@ -313,7 +312,7 @@ void Beep_Task(void *argument)
         LCD_ClearLine(LINE(13));
         LCD_ClearLine(LINE(14));
       }
-      ILI9341_DispStringLine_EN_CH(LINE(13), "Alarm! Voltage too high!");
+      ILI9341_DispStringLine_EN_CH(LINE(13), "Danger! Danger! Danger!");
     }
     else if (adcValue >= 2.0)
     {
@@ -326,7 +325,7 @@ void Beep_Task(void *argument)
         LCD_ClearLine(LINE(13));
         LCD_ClearLine(LINE(14));
       }
-      ILI9341_DispStringLine_EN_CH(LINE(13), "Danger! Danger! Danger!");
+      ILI9341_DispStringLine_EN_CH(LINE(13), "Alarm! Voltage too high!");
     }
     else
     {
