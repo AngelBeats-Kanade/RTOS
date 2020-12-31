@@ -321,7 +321,11 @@ void Beep_Task(void *argument)
     else
     {
       flag = 0;
-      LCD_ClearLine(LINE(13));
+      if (everDisplay == 0)
+      {
+        everDisplay = 1;
+        LCD_ClearLine(LINE(13));
+      }
     }
 
     osDelay(100);
@@ -368,12 +372,18 @@ void TPAD_Task(void *argument)
   /* Infinite loop */
   for(;;)
   {
+    char TPAD_flag = 0;
     if (TPAD_Scan(0))
     {
       ILI9341_DispStringLine_EN_CH(LINE(14), "µçÈÝ°´¼ü¼ì²âµ½´¥Ãþ!");
+      TPAD_flag = 1;
     }
     osDelay(100);
-    LCD_ClearLine(LINE(14));
+    if (TPAD_flag == 1)
+    {
+      TPAD_flag = 0;
+      LCD_ClearLine(LINE(14));
+    }
   }
   /* USER CODE END TPAD_Task */
 }
