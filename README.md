@@ -1,169 +1,169 @@
 # RTOS
 My FreeRTOS to drive stm32.Including ADC, DMA, FLASH, LCD, SPI, USART, TIM. LCD driven by ILI9341, can display Chinese. Not including global interrupt and animation functions. Now I`m thinking about migrating it to stm32h743.
 
-### Ä¿Â¼
-©À©¤.gitignore
-©À©¤LICENSE
-©À©¤Project4.ioc
-©À©¤README.md
-©À©¤STM32F103RCTx_FLASH.ld
-©¦
-©À©¤Core //¾ßÌåÊµÏÖÎÄ¼ş
-©¦  ©À©¤Inc
-©¦  ©¦      adc.h
-©¦  ©¦      dma.h
-©¦  ©¦      font.h
-©¦  ©¦      FreeRTOSConfig.h
-©¦  ©¦      gpio.h
-©¦  ©¦      lcd.h
-©¦  ©¦      main.h
-©¦  ©¦      spi.h
-©¦  ©¦      stm32f1xx_hal_conf.h
-©¦  ©¦      stm32f1xx_it.h
-©¦  ©¦      tim.h
-©¦  ©¦      usart.h
-©¦  ©¦
-©¦  ©¸©¤Src
-©¦          adc.c
-©¦          dma.c
-©¦          font.c
-©¦          freertos.c
-©¦          gpio.c
-©¦          lcd.c
-©¦          main.c
-©¦          spi.c
-©¦          stm32f1xx_hal_msp.c
-©¦          stm32f1xx_hal_timebase_tim.c
-©¦          stm32f1xx_it.c
-©¦          syscalls.c
-©¦          system_stm32f1xx.c
-©¦          tim.c
-©¦          usart.c
-©¦
-©À©¤Drivers //Çı¶¯ÎÄ¼ş£¬HAL¿â
-©¦  ©À©¤CMSIS
-©¦  ©¦  ©À©¤Device
-©¦  ©¦  ©¦  ©¸©¤ST
-©¦  ©¦  ©¦      ©¸©¤STM32F1xx
-©¦  ©¦  ©¦          ©À©¤Include
-©¦  ©¦  ©¦          ©¦      stm32f103xe.h
-©¦  ©¦  ©¦          ©¦      stm32f1xx.h
-©¦  ©¦  ©¦          ©¦      system_stm32f1xx.h
-©¦  ©¦  ©¦          ©¦
-©¦  ©¦  ©¦          ©¸©¤Source
-©¦  ©¦  ©¦              ©¸©¤Templates
-©¦  ©¦  ©¸©¤Include
-©¦  ©¦          cmsis_armcc.h
-©¦  ©¦          cmsis_armclang.h
-©¦  ©¦          cmsis_compiler.h
-©¦  ©¦          cmsis_gcc.h
-©¦  ©¦          cmsis_iccarm.h
-©¦  ©¦          cmsis_version.h
-©¦  ©¦          core_armv8mbl.h
-©¦  ©¦          core_armv8mml.h
-©¦  ©¦          core_cm0.h
-©¦  ©¦          core_cm0plus.h
-©¦  ©¦          core_cm1.h
-©¦  ©¦          core_cm23.h
-©¦  ©¦          core_cm3.h
-©¦  ©¦          core_cm33.h
-©¦  ©¦          core_cm4.h
-©¦  ©¦          core_cm7.h
-©¦  ©¦          core_sc000.h
-©¦  ©¦          core_sc300.h
-©¦  ©¦          mpu_armv7.h
-©¦  ©¦          mpu_armv8.h
-©¦  ©¦          tz_context.h
-©¦  ©¦
-©¦  ©¸©¤STM32F1xx_HAL_Driver
-©¦      ©À©¤Inc
-©¦      ©¦  ©¦  stm32f1xx_hal.h
-©¦      ©¦  ©¦  stm32f1xx_hal_adc.h
-©¦      ©¦  ©¦  stm32f1xx_hal_adc_ex.h
-©¦      ©¦  ©¦  stm32f1xx_hal_cortex.h
-©¦      ©¦  ©¦  stm32f1xx_hal_def.h
-©¦      ©¦  ©¦  stm32f1xx_hal_dma.h
-©¦      ©¦  ©¦  stm32f1xx_hal_dma_ex.h
-©¦      ©¦  ©¦  stm32f1xx_hal_exti.h
-©¦      ©¦  ©¦  stm32f1xx_hal_flash.h
-©¦      ©¦  ©¦  stm32f1xx_hal_flash_ex.h
-©¦      ©¦  ©¦  stm32f1xx_hal_gpio.h
-©¦      ©¦  ©¦  stm32f1xx_hal_gpio_ex.h
-©¦      ©¦  ©¦  stm32f1xx_hal_pwr.h
-©¦      ©¦  ©¦  stm32f1xx_hal_rcc.h
-©¦      ©¦  ©¦  stm32f1xx_hal_rcc_ex.h
-©¦      ©¦  ©¦  stm32f1xx_hal_spi.h
-©¦      ©¦  ©¦  stm32f1xx_hal_tim.h
-©¦      ©¦  ©¦  stm32f1xx_hal_tim_ex.h
-©¦      ©¦  ©¦  stm32f1xx_hal_uart.h
-©¦      ©¦  ©¦
-©¦      ©¦  ©¸©¤Legacy
-©¦      ©¦          stm32_hal_legacy.h
-©¦      ©¦
-©¦      ©¸©¤Src
-©¦              stm32f1xx_hal.c
-©¦              stm32f1xx_hal_adc.c
-©¦              stm32f1xx_hal_adc_ex.c
-©¦              stm32f1xx_hal_cortex.c
-©¦              stm32f1xx_hal_dma.c
-©¦              stm32f1xx_hal_exti.c
-©¦              stm32f1xx_hal_flash.c
-©¦              stm32f1xx_hal_flash_ex.c
-©¦              stm32f1xx_hal_gpio.c
-©¦              stm32f1xx_hal_gpio_ex.c
-©¦              stm32f1xx_hal_pwr.c
-©¦              stm32f1xx_hal_rcc.c
-©¦              stm32f1xx_hal_rcc_ex.c
-©¦              stm32f1xx_hal_spi.c
-©¦              stm32f1xx_hal_tim.c
-©¦              stm32f1xx_hal_tim_ex.c
-©¦              stm32f1xx_hal_uart.c
-©¦
-©À©¤Middlewares //FreeRTOS¿âÎÄ¼ş
-©¦  ©¸©¤Third_Party
-©¦      ©¸©¤FreeRTOS
-©¦          ©¸©¤Source
-©¦              ©¦  croutine.c
-©¦              ©¦  event_groups.c
-©¦              ©¦  list.c
-©¦              ©¦  queue.c
-©¦              ©¦  stream_buffer.c
-©¦              ©¦  tasks.c
-©¦              ©¦  timers.c
-©¦              ©¦
-©¦              ©À©¤CMSIS_RTOS_V2
-©¦              ©¦      cmsis_os.h
-©¦              ©¦      cmsis_os2.c
-©¦              ©¦      cmsis_os2.h
-©¦              ©¦
-©¦              ©À©¤include
-©¦              ©¦      croutine.h
-©¦              ©¦      deprecated_definitions.h
-©¦              ©¦      event_groups.h
-©¦              ©¦      FreeRTOS.h
-©¦              ©¦      list.h
-©¦              ©¦      message_buffer.h
-©¦              ©¦      mpu_prototypes.h
-©¦              ©¦      mpu_wrappers.h
-©¦              ©¦      portable.h
-©¦              ©¦      projdefs.h
-©¦              ©¦      queue.h
-©¦              ©¦      semphr.h
-©¦              ©¦      StackMacros.h
-©¦              ©¦      stack_macros.h
-©¦              ©¦      stream_buffer.h
-©¦              ©¦      task.h
-©¦              ©¦      timers.h
-©¦              ©¦
-©¦              ©¸©¤portable
-©¦                  ©À©¤GCC
-©¦                  ©¦  ©¸©¤ARM_CM3
-©¦                  ©¦          port.c
-©¦                  ©¦          portmacro.h
-©¦                  ©¦
-©¦                  ©¸©¤MemMang
-©¦                          heap_3.c
-©¸©¤startup //Æô¶¯ÎÄ¼ş
+### ç›®å½•
+â”œâ”€.gitignore
+â”œâ”€LICENSE
+â”œâ”€Project4.ioc
+â”œâ”€README.md
+â”œâ”€STM32F103RCTx_FLASH.ld
+â”‚
+â”œâ”€Core //å…·ä½“å®ç°æ–‡ä»¶
+â”‚  â”œâ”€Inc
+â”‚  â”‚      adc.h
+â”‚  â”‚      dma.h
+â”‚  â”‚      font.h
+â”‚  â”‚      FreeRTOSConfig.h
+â”‚  â”‚      gpio.h
+â”‚  â”‚      lcd.h
+â”‚  â”‚      main.h
+â”‚  â”‚      spi.h
+â”‚  â”‚      stm32f1xx_hal_conf.h
+â”‚  â”‚      stm32f1xx_it.h
+â”‚  â”‚      tim.h
+â”‚  â”‚      usart.h
+â”‚  â”‚
+â”‚  â””â”€Src
+â”‚          adc.c
+â”‚          dma.c
+â”‚          font.c
+â”‚          freertos.c
+â”‚          gpio.c
+â”‚          lcd.c
+â”‚          main.c
+â”‚          spi.c
+â”‚          stm32f1xx_hal_msp.c
+â”‚          stm32f1xx_hal_timebase_tim.c
+â”‚          stm32f1xx_it.c
+â”‚          syscalls.c
+â”‚          system_stm32f1xx.c
+â”‚          tim.c
+â”‚          usart.c
+â”‚
+â”œâ”€Drivers //é©±åŠ¨æ–‡ä»¶ï¼ŒHALåº“
+â”‚  â”œâ”€CMSIS
+â”‚  â”‚  â”œâ”€Device
+â”‚  â”‚  â”‚  â””â”€ST
+â”‚  â”‚  â”‚      â””â”€STM32F1xx
+â”‚  â”‚  â”‚          â”œâ”€Include
+â”‚  â”‚  â”‚          â”‚      stm32f103xe.h
+â”‚  â”‚  â”‚          â”‚      stm32f1xx.h
+â”‚  â”‚  â”‚          â”‚      system_stm32f1xx.h
+â”‚  â”‚  â”‚          â”‚
+â”‚  â”‚  â”‚          â””â”€Source
+â”‚  â”‚  â”‚              â””â”€Templates
+â”‚  â”‚  â””â”€Include
+â”‚  â”‚          cmsis_armcc.h
+â”‚  â”‚          cmsis_armclang.h
+â”‚  â”‚          cmsis_compiler.h
+â”‚  â”‚          cmsis_gcc.h
+â”‚  â”‚          cmsis_iccarm.h
+â”‚  â”‚          cmsis_version.h
+â”‚  â”‚          core_armv8mbl.h
+â”‚  â”‚          core_armv8mml.h
+â”‚  â”‚          core_cm0.h
+â”‚  â”‚          core_cm0plus.h
+â”‚  â”‚          core_cm1.h
+â”‚  â”‚          core_cm23.h
+â”‚  â”‚          core_cm3.h
+â”‚  â”‚          core_cm33.h
+â”‚  â”‚          core_cm4.h
+â”‚  â”‚          core_cm7.h
+â”‚  â”‚          core_sc000.h
+â”‚  â”‚          core_sc300.h
+â”‚  â”‚          mpu_armv7.h
+â”‚  â”‚          mpu_armv8.h
+â”‚  â”‚          tz_context.h
+â”‚  â”‚
+â”‚  â””â”€STM32F1xx_HAL_Driver
+â”‚      â”œâ”€Inc
+â”‚      â”‚  â”‚  stm32f1xx_hal.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_adc.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_adc_ex.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_cortex.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_def.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_dma.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_dma_ex.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_exti.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_flash.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_flash_ex.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_gpio.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_gpio_ex.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_pwr.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_rcc.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_rcc_ex.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_spi.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_tim.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_tim_ex.h
+â”‚      â”‚  â”‚  stm32f1xx_hal_uart.h
+â”‚      â”‚  â”‚
+â”‚      â”‚  â””â”€Legacy
+â”‚      â”‚          stm32_hal_legacy.h
+â”‚      â”‚
+â”‚      â””â”€Src
+â”‚              stm32f1xx_hal.c
+â”‚              stm32f1xx_hal_adc.c
+â”‚              stm32f1xx_hal_adc_ex.c
+â”‚              stm32f1xx_hal_cortex.c
+â”‚              stm32f1xx_hal_dma.c
+â”‚              stm32f1xx_hal_exti.c
+â”‚              stm32f1xx_hal_flash.c
+â”‚              stm32f1xx_hal_flash_ex.c
+â”‚              stm32f1xx_hal_gpio.c
+â”‚              stm32f1xx_hal_gpio_ex.c
+â”‚              stm32f1xx_hal_pwr.c
+â”‚              stm32f1xx_hal_rcc.c
+â”‚              stm32f1xx_hal_rcc_ex.c
+â”‚              stm32f1xx_hal_spi.c
+â”‚              stm32f1xx_hal_tim.c
+â”‚              stm32f1xx_hal_tim_ex.c
+â”‚              stm32f1xx_hal_uart.c
+â”‚
+â”œâ”€Middlewares //FreeRTOSåº“æ–‡ä»¶
+â”‚  â””â”€Third_Party
+â”‚      â””â”€FreeRTOS
+â”‚          â””â”€Source
+â”‚              â”‚  croutine.c
+â”‚              â”‚  event_groups.c
+â”‚              â”‚  list.c
+â”‚              â”‚  queue.c
+â”‚              â”‚  stream_buffer.c
+â”‚              â”‚  tasks.c
+â”‚              â”‚  timers.c
+â”‚              â”‚
+â”‚              â”œâ”€CMSIS_RTOS_V2
+â”‚              â”‚      cmsis_os.h
+â”‚              â”‚      cmsis_os2.c
+â”‚              â”‚      cmsis_os2.h
+â”‚              â”‚
+â”‚              â”œâ”€include
+â”‚              â”‚      croutine.h
+â”‚              â”‚      deprecated_definitions.h
+â”‚              â”‚      event_groups.h
+â”‚              â”‚      FreeRTOS.h
+â”‚              â”‚      list.h
+â”‚              â”‚      message_buffer.h
+â”‚              â”‚      mpu_prototypes.h
+â”‚              â”‚      mpu_wrappers.h
+â”‚              â”‚      portable.h
+â”‚              â”‚      projdefs.h
+â”‚              â”‚      queue.h
+â”‚              â”‚      semphr.h
+â”‚              â”‚      StackMacros.h
+â”‚              â”‚      stack_macros.h
+â”‚              â”‚      stream_buffer.h
+â”‚              â”‚      task.h
+â”‚              â”‚      timers.h
+â”‚              â”‚
+â”‚              â””â”€portable
+â”‚                  â”œâ”€GCC
+â”‚                  â”‚  â””â”€ARM_CM3
+â”‚                  â”‚          port.c
+â”‚                  â”‚          portmacro.h
+â”‚                  â”‚
+â”‚                  â””â”€MemMang
+â”‚                          heap_3.c
+â””â”€startup //å¯åŠ¨æ–‡ä»¶
         startup_stm32f103xe.s
 
 ### To-do List
