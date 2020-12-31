@@ -2,26 +2,26 @@
 My FreeRTOS to drive stm32.Including ADC, DMA, FLASH, LCD, SPI, USART, TIM. LCD driven by ILI9341, can display Chinese. Not including global interrupt and animation functions. Now I`m thinking about migrating it to stm32h743.
 
 ### 目录
-├─.gitignore
-├─LICENSE
-├─Project4.ioc
-├─README.md
-├─STM32F103RCTx_FLASH.ld
+├─ .gitignore
+├─ LICENSE
+├─ Project4.ioc
+├─ README.md
+├─ STM32F103RCTx_FLASH.ld
 │
-├─Core //具体实现文件
-│  ├─Inc
-│  │      adc.h
-│  │      dma.h
-│  │      font.h
-│  │      FreeRTOSConfig.h
-│  │      gpio.h
-│  │      lcd.h
-│  │      main.h
-│  │      spi.h
-│  │      stm32f1xx_hal_conf.h
-│  │      stm32f1xx_it.h
-│  │      tim.h
-│  │      usart.h
+├─ Core //具体实现文件
+│  ├─ Inc
+│  │  ├─ adc.h
+│  │  ├─ dma.h
+│  │  ├─ font.h
+│  │  ├─ FreeRTOSConfig.h
+│  │  ├─ gpio.h
+│  │  ├─ lcd.h
+│  │  ├─ main.h
+│  │  ├─ spi.h
+│  │  ├─ stm32f1xx_hal_conf.h
+│  │  ├─ stm32f1xx_it.h
+│  │  ├─ tim.h
+│  │  ├─ usart.h
 │  │
 │  └─Src
 │          adc.c
@@ -167,6 +167,7 @@ My FreeRTOS to drive stm32.Including ADC, DMA, FLASH, LCD, SPI, USART, TIM. LCD 
         startup_stm32f103xe.s
 
 ### To-do List
--[ ] UI
--[ ] Migarate to H743
--[ ] emWin
+
+- [ ] UI
+- [ ] Migarate to H743
+- [ ] emWin
