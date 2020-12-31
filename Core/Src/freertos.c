@@ -259,6 +259,10 @@ void LCD_Task1(void *argument)
   * @retval  None
   * @version V1.0
   * @date    2020-12-30
+  * @note    Traditional printf and sprintf cost too many
+  *          stacks to process float numbers. So I choose
+  *          turnning float to int. If using printf specially
+  *          optimized fot embeded projcet, it can be avoided.
   */
 /* USER CODE END Header_LCD_Task2 */
 void LCD_Task2(void *argument)
@@ -339,10 +343,10 @@ void Beep_Task(void *argument)
 
 /* USER CODE BEGIN Header_LED2_Task */
 /**
-* @brief Function implementing the LED2Task thread.
-* @param argument: Not used
-* @retval None
-*/
+  * @brief Function implementing the LED2Task thread.
+  * @param argument: Not used
+  * @retval None
+  */
 /* USER CODE END Header_LED2_Task */
 void LED2_Task(void *argument)
 {
@@ -365,10 +369,10 @@ void LED2_Task(void *argument)
 
 /* USER CODE BEGIN Header_TPAD_Task */
 /**
-* @brief Function implementing the TPADTask thread.
-* @param argument: Not used
-* @retval None
-*/
+  * @brief Function implementing the TPADTask thread.
+  * @param argument: Not used
+  * @retval None
+  */
 /* USER CODE END Header_TPAD_Task */
 void TPAD_Task(void *argument)
 {
