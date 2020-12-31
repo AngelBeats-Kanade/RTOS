@@ -1,7 +1,17 @@
 # RTOS
 My FreeRTOS to drive stm32.Including ADC, DMA, FLASH, LCD, SPI, USART, TIM. LCD driven by ILI9341, can display Chinese. Not including global interrupt and animation functions. Now I`m thinking about migrating it to stm32h743.
 
-### 目录
+### Environment
+1. CubeMX
+2. IDE
+    1. Use Visual Studio.
+       When using VS, you need a tool named VisualGDB.
+    2. Use CLion.
+       Clion has supported embeded projects now.
+    3. Use other editors.
+       Any editor that configure with cmake, or you can choose KEIL :) .
+
+### Contents
 ```
 ├─ .gitignore
 ├─ LICENSE
