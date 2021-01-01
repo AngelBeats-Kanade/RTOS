@@ -22,6 +22,7 @@
 #include "cmsis_os.h"
 #include "adc.h"
 #include "dma.h"
+#include "fatfs.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -102,6 +103,7 @@ int main(void)
   MX_ADC1_Init();
   MX_SPI1_Init();
   MX_TIM5_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   __HAL_SPI_ENABLE(&hspi1);
   ILI9341_Init();
@@ -215,13 +217,13 @@ void LCD_Init()
 /* USER CODE END 4 */
 
  /**
-   * @brief  Period elapsed callback in non blocking mode
-   * @note   This function is called  when TIM6 interrupt took place, inside
-   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-   * a global variable "uwTick" used as application time base.
-   * @param  htim : TIM handle
-   * @retval None
-   */
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM6 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
