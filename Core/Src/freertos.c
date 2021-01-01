@@ -59,51 +59,51 @@ __IO float adcValue;
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+        .name = "defaultTask",
+        .priority = (osPriority_t) osPriorityNormal,
+        .stack_size = 128 * 4
 };
 /* Definitions for LED1Task */
 osThreadId_t LED1TaskHandle;
 const osThreadAttr_t LED1Task_attributes = {
-  .name = "LED1Task",
-  .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
+        .name = "LED1Task",
+        .priority = (osPriority_t) osPriorityLow,
+        .stack_size = 128 * 4
 };
 /* Definitions for LCDTask01 */
 osThreadId_t LCDTask01Handle;
 const osThreadAttr_t LCDTask01_attributes = {
-  .name = "LCDTask01",
-  .priority = (osPriority_t) osPriorityRealtime1,
-  .stack_size = 128 * 4
+        .name = "LCDTask01",
+        .priority = (osPriority_t) osPriorityRealtime1,
+        .stack_size = 128 * 4
 };
 /* Definitions for LCDTask02 */
 osThreadId_t LCDTask02Handle;
 const osThreadAttr_t LCDTask02_attributes = {
-  .name = "LCDTask02",
-  .priority = (osPriority_t) osPriorityRealtime2,
-  .stack_size = 128 * 4
+        .name = "LCDTask02",
+        .priority = (osPriority_t) osPriorityRealtime2,
+        .stack_size = 128 * 4
 };
 /* Definitions for BeepTask */
 osThreadId_t BeepTaskHandle;
 const osThreadAttr_t BeepTask_attributes = {
-  .name = "BeepTask",
-  .priority = (osPriority_t) osPriorityRealtime7,
-  .stack_size = 128 * 4
+        .name = "BeepTask",
+        .priority = (osPriority_t) osPriorityRealtime7,
+        .stack_size = 128 * 4
 };
 /* Definitions for LED2Task */
 osThreadId_t LED2TaskHandle;
 const osThreadAttr_t LED2Task_attributes = {
-  .name = "LED2Task",
-  .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
+        .name = "LED2Task",
+        .priority = (osPriority_t) osPriorityLow,
+        .stack_size = 128 * 4
 };
 /* Definitions for TPADTask */
 osThreadId_t TPADTaskHandle;
 const osThreadAttr_t TPADTask_attributes = {
-  .name = "TPADTask",
-  .priority = (osPriority_t) osPriorityRealtime6,
-  .stack_size = 128 * 4
+        .name = "TPADTask",
+        .priority = (osPriority_t) osPriorityRealtime6,
+        .stack_size = 128 * 4
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -112,11 +112,17 @@ const osThreadAttr_t TPADTask_attributes = {
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
+
 void LED1_Task(void *argument);
+
 void LCD_Task1(void *argument);
+
 void LCD_Task2(void *argument);
+
 void Beep_Task(void *argument);
+
 void LED2_Task(void *argument);
+
 void TPAD_Task(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -126,7 +132,8 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
   * @param  None
   * @retval None
   */
-void MX_FREERTOS_Init(void) {
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
