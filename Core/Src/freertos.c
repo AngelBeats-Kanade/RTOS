@@ -26,7 +26,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "fatfs.h"
 #include "usart.h"
 #include "lcd.h"
 #include "tim.h"
@@ -191,7 +190,6 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
-  FileSystemTest();
   /* Infinite loop */
   for (;;)
   {

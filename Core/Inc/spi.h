@@ -43,7 +43,7 @@ extern SPI_HandleTypeDef hspi1;
 //#define SPI_FLASH_PageSize            4096
 #define SPI_FLASH_PageSize 256
 #define SPI_FLASH_PerWritePageSize 256
-/*命令定义-�?�?*******************************/
+/*命令定义-开头*******************************/
 #define W25X_WriteEnable 0x06
 #define W25X_WriteDisable 0x04
 #define W25X_ReadStatusReg 0x05
@@ -75,7 +75,7 @@ extern SPI_HandleTypeDef hspi1;
 #define digitalLo(p, i)                                                                                                \
   {                                                                                                                    \
     p->BSRR = (uint32_t)i << 16;                                                                                       \
-  } //输出低电�?
+  } //输出低电平
 #define SPI_FLASH_CS_LOW() digitalLo(FLASH_CS_GPIO_PORT, FLASH_CS_PIN)
 #define SPI_FLASH_CS_HIGH() digitalHi(FLASH_CS_GPIO_PORT, FLASH_CS_PIN)
 /*SPI接口定义-结尾****************************/

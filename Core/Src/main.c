@@ -22,7 +22,6 @@
 #include "cmsis_os.h"
 #include "adc.h"
 #include "dma.h"
-#include "fatfs.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -103,7 +102,6 @@ int main(void)
   MX_ADC1_Init();
   MX_SPI1_Init();
   MX_TIM5_Init();
-  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   __HAL_SPI_ENABLE(&hspi1);
   ILI9341_Init();
