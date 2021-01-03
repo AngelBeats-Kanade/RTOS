@@ -100,8 +100,8 @@ static void XPT2046_DelayUS(__IO uint32_t ulCount)
 /**
   * @brief  XPT2046 的写入命令
   * @param  ucCmd ：命令，该参数为以下值之一：
-  * @arg 0x90 :通道Y+的选择控制字
-  * @arg 0xd0 :通道X+的选择控制字
+  * @arg    0x90 :通道Y+的选择控制字
+  * @arg    0xd0 :通道X+的选择控制字
   * @retval 无
   */
 static void XPT2046_WriteCMD(uint8_t ucCmd)
@@ -164,8 +164,8 @@ static uint16_t XPT2046_ReadCMD(void)
 /**
   * @brief  对 XPT2046 选择一个模拟通道后，启动ADC，并返回ADC采样结果
   * @param  ucChannel ：该参数为以下值之一：
-  * @arg 0x90 :通道Y+的选择控制字
-  * @arg 0xd0 :通道X+的选择控制字
+  * @arg    0x90 :通道Y+的选择控制字
+  * @arg    0xd0 :通道X+的选择控制字
   * @retval 该通道的ADC采样结果
   */
 static uint16_t XPT2046_ReadAdc(uint8_t ucChannel)
