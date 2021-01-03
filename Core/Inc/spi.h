@@ -29,6 +29,7 @@ extern "C" {
 
 /* USER CODE BEGIN Includes */
 #include "usart.h"
+
 /* USER CODE END Includes */
 
 extern SPI_HandleTypeDef hspi1;
@@ -95,6 +96,7 @@ extern SPI_HandleTypeDef hspi1;
     if (FLASH_DEBUG_ON)                                                                                                \
       printf("<<-FLASH-DEBUG->> [%d]" fmt "\n", __LINE__, ##arg);                                                      \
   } while (0)
+
 /* USER CODE END Private defines */
 
 void MX_SPI1_Init(void);

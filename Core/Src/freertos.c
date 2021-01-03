@@ -29,6 +29,7 @@
 #include "usart.h"
 #include "lcd.h"
 #include "tim.h"
+#include "touch_screen.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -105,6 +106,13 @@ const osThreadAttr_t TPADTask_attributes = {
   .priority = (osPriority_t) osPriorityRealtime6,
   .stack_size = 128 * 4
 };
+/* Definitions for LCDTask03 */
+osThreadId_t LCDTask03Handle;
+const osThreadAttr_t LCDTask03_attributes = {
+  .name = "LCDTask03",
+  .priority = (osPriority_t) osPriorityRealtime3,
+  .stack_size = 128 * 4
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -118,6 +126,7 @@ void LCD_Task2(void *argument);
 void Beep_Task(void *argument);
 void LED2_Task(void *argument);
 void TPAD_Task(void *argument);
+void LCD_Task3(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -168,6 +177,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of TPADTask */
   TPADTaskHandle = osThreadNew(TPAD_Task, NULL, &TPADTask_attributes);
+
+  /* creation of LCDTask03 */
+  LCDTask03Handle = osThreadNew(LCD_Task3, NULL, &LCDTask03_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -396,6 +408,25 @@ void TPAD_Task(void *argument)
     }
   }
   /* USER CODE END TPAD_Task */
+}
+
+/* USER CODE BEGIN Header_LCD_Task3 */
+/**
+* @brief Function implementing the LCDTask03 thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_LCD_Task3 */
+void LCD_Task3(void *argument)
+{
+  /* USER CODE BEGIN LCD_Task3 */
+  /* Infinite loop */
+  for(;;)
+  {
+    XPT2046_TouchEvenHandler();
+    osDelay(10);
+  }
+  /* USER CODE END LCD_Task3 */
 }
 
 /* Private application code --------------------------------------------------*/

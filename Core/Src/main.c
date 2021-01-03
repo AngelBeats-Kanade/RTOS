@@ -30,6 +30,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
+#include "touch_screen.h"
 #include <string.h>
 /* USER CODE END Includes */
 
@@ -105,6 +106,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
   __HAL_SPI_ENABLE(&hspi1);
   ILI9341_Init();
+  XPT2046_Init();
+  Calibrate_or_Get_TouchParaWithFlash(6,0);
   LCD_Init();
   TPAD_Init();
   HAL_ADCEx_Calibration_Start(&hadc1);
