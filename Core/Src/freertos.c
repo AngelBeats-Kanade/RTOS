@@ -390,22 +390,25 @@ void LED2_Task(void *argument)
 void TPAD_Task(void *argument)
 {
   /* USER CODE BEGIN TPAD_Task */
+  char TPAD_flag = 0;
   /* Infinite loop */
   for (;;)
   {
-    char TPAD_flag = 0;
-    if (TPAD_Scan(0))
+    if (TPAD_Scan(1))
     {
       ILI9341_DispStringLine_EN_CH(LINE(14), "TPAD touched!");
       TPAD_flag = 1;
     }
-    osDelay(100);
-    if (TPAD_flag == 1)
+    else
     {
-      TPAD_flag = 0;
-      LCD_ClearLine(LINE(13));
-      LCD_ClearLine(LINE(14));
+      if (TPAD_flag == 1)
+      {
+        LCD_ClearLine(LINE(13));
+        LCD_ClearLine(LINE(14));
+        TPAD_flag = 0;
+      }
     }
+    osDelay(100);
   }
   /* USER CODE END TPAD_Task */
 }
