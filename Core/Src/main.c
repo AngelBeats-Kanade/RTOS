@@ -21,6 +21,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "adc.h"
+#include "crc.h"
 #include "dma.h"
 #include "fatfs.h"
 #include "spi.h"
@@ -105,11 +106,12 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM5_Init();
   MX_FATFS_Init();
+  MX_CRC_Init();
   /* USER CODE BEGIN 2 */
   __HAL_SPI_ENABLE(&hspi1);
   ILI9341_Init();
   XPT2046_Init();
-  //Calibrate_or_Get_TouchParaWithFlash(6,0);
+  Calibrate_or_Get_TouchParaWithFlash(6,0);
   LCD_Init();
   TPAD_Init();
   HAL_ADCEx_Calibration_Start(&hadc1);

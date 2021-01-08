@@ -24,10 +24,6 @@ FATFS USERFatFS;    /* File system object for USER logical drive */
 FIL USERFile;       /* File object for USER */
 
 /* USER CODE BEGIN Variables */
-FRESULT f_res;
-UINT fnum;
-BYTE ReadBuffer[1024] = {0};
-BYTE WriteBuffer[] = "Welcome to use stm32, this is a file system test file.\r\n";
 
 /* USER CODE END Variables */
 
@@ -38,116 +34,18 @@ void MX_FATFS_Init(void)
 
   /* USER CODE BEGIN Init */
   /* additional user code for init */
-  if (retUSER == 0)
+  if (retUSER != 0)
   {
-    f_res = f_mount(&USERFatFS, (TCHAR const *) USERPath, 1);
-    printf_fatfs_error(f_res);
-    /*----------------------- 格式化测试 ---------------------------*/
-    /* 如果没有文件系统就格式化创建创建文件系统 */
-    if (f_res == FR_NO_FILESYSTEM)
-    {
-      printf(">>There is no filesystem in flash, initializing filesystem...\r\n");
-      /* 格式化 */
-      f_res = f_mkfs((TCHAR const *) USERPath, 0, 0);
-
-      if (f_res == FR_OK)
-      {
-        printf(">>Initialize successfully!\r\n");
-        /* 格式化后，先取消挂载 */
-        f_res = f_mount(NULL, (TCHAR const *) USERPath, 1);
-        /* 重新挂载	*/
-        f_res = f_mount(&USERFatFS, (TCHAR const *) USERPath, 1);
-      }
-      else
-      {
-        printf(">>Initialization error!\r\n");
-        Error_Handler();
-      }
-    }
-    else if (f_res != FR_OK)
-    {
-      printf(">>Fail to mount filesystem: (%d)\r\n", f_res);
-      printf_fatfs_error(f_res);
-      Error_Handler();
-    }
-    else
-    {
-      printf(">>Mount filesystem successfully!\r\n");
-    }
-
-    /*----------------------- 文件系统测试：写测试 -----------------------------*/
-    /* 打开文件，如果文件不存在则创建它 */
-    printf("<-------Write test... ------->\r\n");
-    f_res = f_open(&USERFile, "FatFs", FA_CREATE_ALWAYS | FA_WRITE);
-    if (f_res == FR_OK)
-    {
-      printf(">>Open/create FatFs.txt successfully, write data to it.\r\n");
-      /* 将指定存储区内容写入到文件内 */
-      f_res = f_write(&USERFile, WriteBuffer, sizeof(WriteBuffer), &fnum);
-      if (f_res == FR_OK)
-      {
-        printf(">>Write successfully, byte data written: %d\r\n", fnum);
-        printf(">>Data written to file: \r\n%s\r\n", WriteBuffer);
-      }
-      else
-      {
-        printf(">>Fail to write file: (%d)\r\n", f_res);
-      }
-      /* 不再读写，关闭文件 */
-      f_close(&USERFile);
-    }
-    else
-    {
-      printf(">>Fail to open/create file!\r\n");
-    }
-
-    /*------------------- 文件系统测试：读测试 ------------------------------------*/
-    printf("<-------Read test... ------->\r\n");
-    f_res = f_open(&USERFile, "FatFs", FA_OPEN_EXISTING | FA_READ);
-    if (f_res == FR_OK)
-    {
-      printf(">>Open file success!\r\n");
-      f_res = f_read(&USERFile, ReadBuffer, sizeof(ReadBuffer), &fnum);
-      if (f_res == FR_OK)
-      {
-        printf(">>Read file success, byte data read: %d\r\n", fnum);
-        printf(">>Data read:\r\n%s \r\n", ReadBuffer);
-      }
-      else
-      {
-        printf(">>Fail to read file: (%d)\r\n", f_res);
-      }
-    }
-    else
-    {
-      printf(">>Fail to open file!\r\n");
-    }
-    /* 不再读写，关闭文件 */
-    f_close(&USERFile);
-
-    /* 不再使用，取消挂载 */
-    f_res = f_mount(NULL, (TCHAR const *) USERPath, 1);
+    Error_Handler();
   }
   /* USER CODE END Init */
-}
-
-/**
-  * @brief  Gets Time from RTC
-  * @param  None
-  * @retval Time in DWORD
-  */
-DWORD get_fattime(void)
-{
-  /* USER CODE BEGIN get_fattime */
-  return 0;
-  /* USER CODE END get_fattime */
 }
 
 /* USER CODE BEGIN Application */
 /**
   * @brief  调试信息
-  * @param  无
-  * @retval 无
+  * @param  �?
+  * @retval �?
   */
 void printf_fatfs_error(FRESULT fresult)
 {
