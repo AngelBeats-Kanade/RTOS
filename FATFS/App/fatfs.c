@@ -43,9 +43,9 @@ void MX_FATFS_Init(void)
 
 /* USER CODE BEGIN Application */
 /**
-  * @brief  璋冭瘯淇℃伅
-  * @param  鏃?
-  * @retval 鏃?
+  * @brief  调试信息
+  * @param  无
+  * @retval 无
   */
 void printf_fatfs_error(FRESULT fresult)
 {
