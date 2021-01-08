@@ -32,6 +32,7 @@ My FreeRTOS to drive stm32.Including ADC, DMA, FLASH, LCD, SPI, USART, TIM. LCD 
 │  │  ├─stm32f1xx_hal_conf.h
 │  │  ├─stm32f1xx_it.h
 │  │  ├─tim.h
+│  │  ├─touch_screen.h
 │  │  └─usart.h
 │  │
 │  └─Src
@@ -49,6 +50,7 @@ My FreeRTOS to drive stm32.Including ADC, DMA, FLASH, LCD, SPI, USART, TIM. LCD 
 │    ├─syscalls.c
 │    ├─system_stm32f1xx.c
 │    ├─tim.c
+│    ├─touch_screen.c
 │    └─usart.c
 │
 ├─Drivers //驱动文件，HAL库
