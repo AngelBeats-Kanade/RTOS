@@ -117,6 +117,16 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
 
 /* USER CODE BEGIN 1 */
 /**
+  * @brief  Initialize flash.
+  * @param  None
+  * @retval None
+  */
+void SPI_FLASH_Init(void)
+{
+  MX_SPI1_Init();
+  __HAL_SPI_ENABLE(&hspi1);
+}
+/**
   * @brief  Erase flash sector
   * @param  sectorAddr: Sector to be erased
   * @retval None

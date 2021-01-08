@@ -38,7 +38,7 @@ extern SPI_HandleTypeDef hspi1;
 /* Private define ------------------------------------------------------------*/
 //#define  sFLASH_ID                       0xEF3015     //W25X16
 //#define  sFLASH_ID                       0xEF4015	    //W25Q16
-#define  sFLASH_ID                       0XEF4017     //W25Q64
+#define  sFLASH_ID                       0xEF4017     //W25Q64
 //#define  sFLASH_ID                       0XEF4018     //W25Q128
 
 //#define SPI_FLASH_PageSize            4096
@@ -102,6 +102,8 @@ extern SPI_HandleTypeDef hspi1;
 void MX_SPI1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+void SPI_FLASH_Init(void);
+
 void SPI_FLASH_SectorErase(uint32_t SectorAddr);
 
 void SPI_FLASH_BulkErase(void);

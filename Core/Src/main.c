@@ -22,6 +22,7 @@
 #include "cmsis_os.h"
 #include "adc.h"
 #include "dma.h"
+#include "fatfs.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -103,11 +104,12 @@ int main(void)
   MX_ADC1_Init();
   MX_SPI1_Init();
   MX_TIM5_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   __HAL_SPI_ENABLE(&hspi1);
   ILI9341_Init();
   XPT2046_Init();
-  Calibrate_or_Get_TouchParaWithFlash(6,0);
+  //Calibrate_or_Get_TouchParaWithFlash(6,0);
   LCD_Init();
   TPAD_Init();
   HAL_ADCEx_Calibration_Start(&hadc1);
@@ -250,7 +252,7 @@ void Error_Handler(void)
   while (1)
   {
     HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-    HAL_Delay(200);
+    osDelay(200);
   }
   /* USER CODE END Error_Handler_Debug */
 }
