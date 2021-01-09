@@ -51,6 +51,8 @@ strType_XPT2046_TouchPara strXPT2046_TouchPara[] = {
 };
 
 volatile uint8_t ucXPT2046_TouchFlag = 0;
+
+char touchBuff[20];
 /* USER CODE END 0 */
 
 /**
@@ -794,6 +796,8 @@ void XPT2046_TouchDown(strType_XPT2046_Coordinate *touch)
 
   /*处理描绘轨迹*/
   //Draw_Trail(touch->pre_x, touch->pre_y, touch->x, touch->y, &brush);
+  sprintf(touchBuff, "x=%3d, y=%3d", touch->x, touch->y);
+  ILI9341_DispStringLine_EN(LINE(0), touchBuff);
 
   /***在上面编写自己的触摸按下处理应用***/
 }
@@ -814,6 +818,7 @@ void XPT2046_TouchUp(strType_XPT2046_Coordinate *touch)
 
   /*处理触摸画板的选择按钮*/
   //Touch_Button_Up(touch->pre_x, touch->pre_y);
+  LCD_ClearLine(LINE(0));
 
   /***在上面编写自己的触摸释放处理应用***/
 }
