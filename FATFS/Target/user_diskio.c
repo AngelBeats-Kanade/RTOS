@@ -37,12 +37,14 @@
 #include <string.h>
 #include "ff_gen_drv.h"
 #include "spi.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define SPI_FLASH_REBUILD           1    // 1:使能格式化串行Flash，0：禁用格式化串行Flash
-#define SPI_FLASH_SECTOR_SIZE    4096    // 串行Flash扇区大小
-#define SPI_FLASH_START_SECTOR   1792    // 串行Flash文件系统FatFS偏移量
-#define SPI_FLASH_SECTOR_COUNT   2304    // 串行Flash文件系统FatFS占用扇区个数
+#define SPI_FLASH_REBULD          1
+#define SPI_FLASH_SECTOR_SIZE  4096
+#define SPI_FLASH_START_SECTOR 1792
+#define SPI_FLASH_SECTOR_COUNT 2304
+
 /* Private variables ---------------------------------------------------------*/
 /* Disk status */
 static volatile DSTATUS Stat = STA_NOINIT;
@@ -50,24 +52,17 @@ static volatile DSTATUS Stat = STA_NOINIT;
 /* USER CODE END DECL */
 
 /* Private function prototypes -----------------------------------------------*/
-DSTATUS USER_initialize(BYTE pdrv);
-
-DSTATUS USER_status(BYTE pdrv);
-
-DRESULT USER_read(BYTE pdrv, BYTE *buff, DWORD sector, UINT count);
-
+DSTATUS USER_initialize (BYTE pdrv);
+DSTATUS USER_status (BYTE pdrv);
+DRESULT USER_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count);
 #if _USE_WRITE == 1
-
-DRESULT USER_write(BYTE pdrv, const BYTE *buff, DWORD sector, UINT count);
-
+DRESULT USER_write (BYTE pdrv, const BYTE *buff, DWORD sector, UINT count);
 #endif /* _USE_WRITE == 1 */
 #if _USE_IOCTL == 1
-
-DRESULT USER_ioctl(BYTE pdrv, BYTE cmd, void *buff);
-
+DRESULT USER_ioctl (BYTE pdrv, BYTE cmd, void *buff);
 #endif /* _USE_IOCTL == 1 */
 
-Diskio_drvTypeDef USER_Driver =
+Diskio_drvTypeDef  USER_Driver =
         {
                 USER_initialize,
                 USER_status,
@@ -87,29 +82,32 @@ Diskio_drvTypeDef USER_Driver =
   * @param  pdrv: Physical drive number (0..)
   * @retval DSTATUS: Operation status
   */
-DSTATUS USER_initialize(
+DSTATUS USER_initialize (
         BYTE pdrv           /* Physical drive nmuber to identify the drive */
 )
 {
   /* USER CODE BEGIN INIT */
-#if SPI_FLASH_REBUILD == 1
-  static uint8_t startflag = 1;
+#if SPI_FLASH_REBULD == 1
+  static uint8_t startFlag = 1;
 #endif
   Stat = STA_NOINIT;
-  SPI_FLASH_Init();
+
+  MX_SPI1_Init();
+  __HAL_SPI_ENABLE(&hspi1);
   SPI_Flash_WAKEUP();
-  /* 获取串行FLASH状态 */
+
   if (SPI_FLASH_ReadID() == sFLASH_ID)
   {
-#if SPI_FLASH_REBUILD == 1
-    if (startflag)
+#if SPI_FLASH_REBULD == 1
+    if (startFlag)
     {
       SPI_FLASH_SectorErase(SPI_FLASH_START_SECTOR * SPI_FLASH_SECTOR_SIZE);
-      startflag = 0;
+      startFlag = 0;
     }
 #endif
     Stat &= ~STA_NOINIT;
   }
+
   return Stat;
   /* USER CODE END INIT */
 }
@@ -119,16 +117,16 @@ DSTATUS USER_initialize(
   * @param  pdrv: Physical drive number (0..)
   * @retval DSTATUS: Operation status
   */
-DSTATUS USER_status(
+DSTATUS USER_status (
         BYTE pdrv       /* Physical drive number to identify the drive */
 )
 {
   /* USER CODE BEGIN STATUS */
   Stat = STA_NOINIT;
+
   if (SPI_FLASH_ReadID() == sFLASH_ID)
-  {
     Stat &= ~STA_NOINIT;
-  }
+
   return Stat;
   /* USER CODE END STATUS */
 }
@@ -141,7 +139,7 @@ DSTATUS USER_status(
   * @param  count: Number of sectors to read (1..128)
   * @retval DRESULT: Operation result
   */
-DRESULT USER_read(
+DRESULT USER_read (
         BYTE pdrv,      /* Physical drive nmuber to identify the drive */
         BYTE *buff,     /* Data buffer to store read data */
         DWORD sector,   /* Sector address in LBA */
@@ -151,6 +149,7 @@ DRESULT USER_read(
   /* USER CODE BEGIN READ */
   sector += SPI_FLASH_START_SECTOR;
   SPI_FLASH_BufferRead(buff, sector * SPI_FLASH_SECTOR_SIZE, count * SPI_FLASH_SECTOR_SIZE);
+
   return RES_OK;
   /* USER CODE END READ */
 }
@@ -164,8 +163,7 @@ DRESULT USER_read(
   * @retval DRESULT: Operation result
   */
 #if _USE_WRITE == 1
-
-DRESULT USER_write(
+DRESULT USER_write (
         BYTE pdrv,          /* Physical drive nmuber to identify the drive */
         const BYTE *buff,   /* Data to be written */
         DWORD sector,       /* Sector address in LBA */
@@ -174,15 +172,16 @@ DRESULT USER_write(
 {
   /* USER CODE BEGIN WRITE */
   /* USER CODE HERE */
-  uint32_t write_addr;
+  uint32_t write_address;
+
   sector += SPI_FLASH_START_SECTOR;
-  write_addr = sector * SPI_FLASH_SECTOR_SIZE;
-  SPI_FLASH_SectorErase(write_addr);
-  SPI_FLASH_BufferWrite((uint8_t *) buff, write_addr, count * SPI_FLASH_SECTOR_SIZE);
+  write_address = sector * SPI_FLASH_SECTOR_SIZE;
+  SPI_FLASH_SectorErase(write_address);
+  SPI_FLASH_BufferWrite((uint8_t *) buff, write_address, count * SPI_FLASH_SECTOR_SIZE);
+
   return RES_OK;
   /* USER CODE END WRITE */
 }
-
 #endif /* _USE_WRITE == 1 */
 
 /**
@@ -193,8 +192,7 @@ DRESULT USER_write(
   * @retval DRESULT: Operation result
   */
 #if _USE_IOCTL == 1
-
-DRESULT USER_ioctl(
+DRESULT USER_ioctl (
         BYTE pdrv,      /* Physical drive nmuber (0..) */
         BYTE cmd,       /* Control code */
         void *buff      /* Buffer to send/receive control data */
@@ -202,37 +200,38 @@ DRESULT USER_ioctl(
 {
   /* USER CODE BEGIN IOCTL */
   DRESULT res = RES_ERROR;
-  if (Stat & STA_NOINIT) return RES_NOTRDY;
+
+  if (Stat & STA_NOINIT)
+    return RES_NOTRDY;
 
   switch (cmd)
   {
-    /* Make sure that no pending write process */
-    case CTRL_SYNC :
+    case CTRL_SYNC:
       res = RES_OK;
       break;
 
-    case GET_SECTOR_COUNT :
-      *(DWORD * )buff = SPI_FLASH_SECTOR_COUNT;
+    case GET_SECTOR_COUNT:
+      *(DWORD*)buff = SPI_FLASH_SECTOR_COUNT;
       res = RES_OK;
       break;
 
-    case GET_SECTOR_SIZE :
-      *(WORD * )buff = SPI_FLASH_SECTOR_SIZE;
+    case GET_SECTOR_SIZE:
+      *(WORD*)buff = SPI_FLASH_SECTOR_SIZE;
       res = RES_OK;
       break;
 
-    case GET_BLOCK_SIZE :
-      *(DWORD * )buff = 1;
+    case GET_BLOCK_SIZE:
+      *(DWORD*)buff = 1;
       res = RES_OK;
       break;
 
     default:
       res = RES_PARERR;
   }
+
   return res;
   /* USER CODE END IOCTL */
 }
-
 #endif /* _USE_IOCTL == 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

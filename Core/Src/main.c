@@ -111,15 +111,13 @@ int main(void)
   __HAL_SPI_ENABLE(&hspi1);
   ILI9341_Init();
   XPT2046_Init();
-  Calibrate_or_Get_TouchParaWithFlash(6,0);
   LCD_Init();
   TPAD_Init();
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *) &ADC_ConvertedValue, 2);
   /* USER CODE END 2 */
 
-  /* Init scheduler */
-  osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
+  /* Call init function for freertos objects (in freertos.c) */
   MX_FREERTOS_Init();
   /* Start scheduler */
   osKernelStart();

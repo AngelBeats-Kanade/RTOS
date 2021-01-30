@@ -39,7 +39,9 @@ extern FIL USERFile; /* File object for USER */
 void MX_FATFS_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void printf_fatfs_error(FRESULT fresult);
+void printf_fatfs_error(FRESULT f_result);
+void fatfs_read_test(void);
+void fatfs_write_test(void);
 /* USER CODE END Prototypes */
 #ifdef __cplusplus
 }

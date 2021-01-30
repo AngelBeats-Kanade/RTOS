@@ -3,11 +3,10 @@
 /* (C)ChaN, 2014                                                          */
 /*------------------------------------------------------------------------*/
 
-#include <stdlib.h>        /* ANSI memory controls */
+#include <stdlib.h>		/* ANSI memory controls */
 #include "../ff.h"
 
 #if _FS_REENTRANT
-
 /*-----------------------------------------------------------------------
  Create a Synchronization Object
 ------------------------------------------------------------------------
@@ -16,17 +15,17 @@
  returned, the f_mount function fails with FR_INT_ERR.
 */
 
-int ff_cre_syncobj(    /* TRUE:Function succeeded, FALSE:Could not create due to any error */
-        BYTE vol,            /* Corresponding logical drive being processed */
-        _SYNC_t *sobj        /* Pointer to return the created sync object */
+int ff_cre_syncobj (	/* TRUE:Function succeeded, FALSE:Could not create due to any error */
+	BYTE vol,			/* Corresponding logical drive being processed */
+	_SYNC_t *sobj		/* Pointer to return the created sync object */
 )
 {
   int ret;
-
+  
   osSemaphoreDef(SEM);
-  *sobj = osSemaphoreNew(1, 1, osSemaphore(SEM));
+  *sobj = osSemaphoreCreate(osSemaphore(SEM), 1);		
   ret = (*sobj != NULL);
-
+  
   return ret;
 }
 
@@ -40,11 +39,11 @@ int ff_cre_syncobj(    /* TRUE:Function succeeded, FALSE:Could not create due to
 /  returned, the f_mount function fails with FR_INT_ERR.
 */
 
-int ff_del_syncobj(    /* TRUE:Function succeeded, FALSE:Could not delete due to any error */
-        _SYNC_t sobj        /* Sync object tied to the logical drive to be deleted */
+int ff_del_syncobj (	/* TRUE:Function succeeded, FALSE:Could not delete due to any error */
+	_SYNC_t sobj		/* Sync object tied to the logical drive to be deleted */
 )
 {
-  osSemaphoreDelete(sobj);
+  osSemaphoreDelete (sobj);
   return 1;
 }
 
@@ -57,17 +56,17 @@ int ff_del_syncobj(    /* TRUE:Function succeeded, FALSE:Could not delete due to
 /  When a zero is returned, the file function fails with FR_TIMEOUT.
 */
 
-int ff_req_grant(    /* TRUE:Got a grant to access the volume, FALSE:Could not get a grant */
-        _SYNC_t sobj    /* Sync object to wait */
+int ff_req_grant (	/* TRUE:Got a grant to access the volume, FALSE:Could not get a grant */
+	_SYNC_t sobj	/* Sync object to wait */
 )
 {
   int ret = 0;
-
-  if (osSemaphoreAcquire(sobj, _FS_TIMEOUT) == osOK)
+  
+  if(osSemaphoreWait(sobj, _FS_TIMEOUT) == osOK)
   {
     ret = 1;
   }
-
+  
   return ret;
 }
 
@@ -79,8 +78,8 @@ int ff_req_grant(    /* TRUE:Got a grant to access the volume, FALSE:Could not g
 /* This function is called on leaving file functions to unlock the volume.
 */
 
-void ff_rel_grant(
-        _SYNC_t sobj    /* Sync object to be signaled */
+void ff_rel_grant (
+	_SYNC_t sobj	/* Sync object to be signaled */
 )
 {
   osSemaphoreRelease(sobj);
@@ -88,7 +87,10 @@ void ff_rel_grant(
 
 #endif
 
-#if _USE_LFN == 3    /* LFN with a working buffer on the heap */
+
+
+
+#if _USE_LFN == 3	/* LFN with a working buffer on the heap */
 /*------------------------------------------------------------------------*/
 /* Allocate a memory block                                                */
 /*------------------------------------------------------------------------*/
@@ -96,10 +98,10 @@ void ff_rel_grant(
 */
 
 void* ff_memalloc (	/* Returns pointer to the allocated memory block */
-    UINT msize		/* Number of bytes to allocate */
+	UINT msize		/* Number of bytes to allocate */
 )
 {
-    return malloc(msize);	/* Allocate a new memory block with POSIX API */
+	return malloc(msize);	/* Allocate a new memory block with POSIX API */
 }
 
 
@@ -108,10 +110,10 @@ void* ff_memalloc (	/* Returns pointer to the allocated memory block */
 /*------------------------------------------------------------------------*/
 
 void ff_memfree (
-    void* mblock	/* Pointer to the memory block to free */
+	void* mblock	/* Pointer to the memory block to free */
 )
 {
-    free(mblock);	/* Discard the memory block with POSIX API */
+	free(mblock);	/* Discard the memory block with POSIX API */
 }
 
 #endif

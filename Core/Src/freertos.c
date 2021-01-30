@@ -57,76 +57,35 @@ char flag;
 char everDisplay = 0;
 __IO float adcValue;
 /* USER CODE END Variables */
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
-};
-/* Definitions for LED1Task */
-osThreadId_t LED1TaskHandle;
-const osThreadAttr_t LED1Task_attributes = {
-  .name = "LED1Task",
-  .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
-};
-/* Definitions for LCDTask01 */
-osThreadId_t LCDTask01Handle;
-const osThreadAttr_t LCDTask01_attributes = {
-  .name = "LCDTask01",
-  .priority = (osPriority_t) osPriorityRealtime1,
-  .stack_size = 128 * 4
-};
-/* Definitions for LCDTask02 */
-osThreadId_t LCDTask02Handle;
-const osThreadAttr_t LCDTask02_attributes = {
-  .name = "LCDTask02",
-  .priority = (osPriority_t) osPriorityRealtime2,
-  .stack_size = 128 * 4
-};
-/* Definitions for BeepTask */
-osThreadId_t BeepTaskHandle;
-const osThreadAttr_t BeepTask_attributes = {
-  .name = "BeepTask",
-  .priority = (osPriority_t) osPriorityRealtime7,
-  .stack_size = 128 * 4
-};
-/* Definitions for LED2Task */
-osThreadId_t LED2TaskHandle;
-const osThreadAttr_t LED2Task_attributes = {
-  .name = "LED2Task",
-  .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
-};
-/* Definitions for TPADTask */
-osThreadId_t TPADTaskHandle;
-const osThreadAttr_t TPADTask_attributes = {
-  .name = "TPADTask",
-  .priority = (osPriority_t) osPriorityRealtime6,
-  .stack_size = 128 * 4
-};
-/* Definitions for LCDTask03 */
-osThreadId_t LCDTask03Handle;
-const osThreadAttr_t LCDTask03_attributes = {
-  .name = "LCDTask03",
-  .priority = (osPriority_t) osPriorityRealtime3,
-  .stack_size = 128 * 4
-};
+osThreadId defaultTaskHandle;
+osThreadId LED1TaskHandle;
+osThreadId LCDTask01Handle;
+osThreadId LCDTask02Handle;
+osThreadId BeepTaskHandle;
+osThreadId LED2TaskHandle;
+osThreadId TPADTaskHandle;
+osThreadId LCDTask03Handle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
 /* USER CODE END FunctionPrototypes */
 
-void StartDefaultTask(void *argument);
-void LED1_Task(void *argument);
-void LCD_Task1(void *argument);
-void LCD_Task2(void *argument);
-void Beep_Task(void *argument);
-void LED2_Task(void *argument);
-void TPAD_Task(void *argument);
-void LCD_Task3(void *argument);
+void StartDefaultTask(void const *argument);
+
+void LED1_Task(void const *argument);
+
+void LCD_Task1(void const *argument);
+
+void LCD_Task2(void const *argument);
+
+void Beep_Task(void const *argument);
+
+void LED2_Task(void const *argument);
+
+void TPAD_Task(void const *argument);
+
+void LCD_Task3(void const *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -135,7 +94,8 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
   * @param  None
   * @retval None
   */
-void MX_FREERTOS_Init(void) {
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -157,38 +117,41 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* definition and creation of defaultTask */
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  /* creation of LED1Task */
-  LED1TaskHandle = osThreadNew(LED1_Task, NULL, &LED1Task_attributes);
+  /* definition and creation of LED1Task */
+  osThreadDef(LED1Task, LED1_Task, osPriorityLow, 0, 128);
+  LED1TaskHandle = osThreadCreate(osThread(LED1Task), NULL);
 
-  /* creation of LCDTask01 */
-  LCDTask01Handle = osThreadNew(LCD_Task1, NULL, &LCDTask01_attributes);
+  /* definition and creation of LCDTask01 */
+  osThreadDef(LCDTask01, LCD_Task1, osPriorityRealtime + 1, 0, 128);
+  LCDTask01Handle = osThreadCreate(osThread(LCDTask01), NULL);
 
-  /* creation of LCDTask02 */
-  LCDTask02Handle = osThreadNew(LCD_Task2, NULL, &LCDTask02_attributes);
+  /* definition and creation of LCDTask02 */
+  osThreadDef(LCDTask02, LCD_Task2, osPriorityRealtime + 2, 0, 128);
+  LCDTask02Handle = osThreadCreate(osThread(LCDTask02), NULL);
 
-  /* creation of BeepTask */
-  BeepTaskHandle = osThreadNew(Beep_Task, NULL, &BeepTask_attributes);
+  /* definition and creation of BeepTask */
+  osThreadDef(BeepTask, Beep_Task, osPriorityRealtime, 0, 128);
+  BeepTaskHandle = osThreadCreate(osThread(BeepTask), NULL);
 
-  /* creation of LED2Task */
-  LED2TaskHandle = osThreadNew(LED2_Task, NULL, &LED2Task_attributes);
+  /* definition and creation of LED2Task */
+  osThreadDef(LED2Task, LED2_Task, osPriorityLow, 0, 128);
+  LED2TaskHandle = osThreadCreate(osThread(LED2Task), NULL);
 
-  /* creation of TPADTask */
-  TPADTaskHandle = osThreadNew(TPAD_Task, NULL, &TPADTask_attributes);
+  /* definition and creation of TPADTask */
+  osThreadDef(TPADTask, TPAD_Task, osPriorityRealtime, 0, 128);
+  TPADTaskHandle = osThreadCreate(osThread(TPADTask), NULL);
 
-  /* creation of LCDTask03 */
-  LCDTask03Handle = osThreadNew(LCD_Task3, NULL, &LCDTask03_attributes);
+  /* definition and creation of LCDTask03 */
+  osThreadDef(LCDTask03, LCD_Task3, osPriorityRealtime + 3, 0, 128);
+  LCDTask03Handle = osThreadCreate(osThread(LCDTask03), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
-
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-
-  /* USER CODE END RTOS_EVENTS */
 
 }
 
@@ -199,7 +162,7 @@ void MX_FREERTOS_Init(void) {
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+void StartDefaultTask(void const *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
@@ -220,7 +183,7 @@ void StartDefaultTask(void *argument)
   * @date    2020-12-30
   */
 /* USER CODE END Header_LED1_Task */
-void LED1_Task(void *argument)
+void LED1_Task(void const *argument)
 {
   /* USER CODE BEGIN LED1_Task */
   /* Infinite loop */
@@ -249,7 +212,7 @@ void LED1_Task(void *argument)
   * @date    2020-12-30
   */
 /* USER CODE END Header_LCD_Task1 */
-void LCD_Task1(void *argument)
+void LCD_Task1(void const *argument)
 {
   /* USER CODE BEGIN LCD_Task1 */
   /* Infinite loop */
@@ -278,7 +241,7 @@ void LCD_Task1(void *argument)
   *          it can be avoided.
   */
 /* USER CODE END Header_LCD_Task2 */
-void LCD_Task2(void *argument)
+void LCD_Task2(void const *argument)
 {
   /* USER CODE BEGIN LCD_Task2 */
   /* Infinite loop */
@@ -308,7 +271,7 @@ void LCD_Task2(void *argument)
   * @date    2020-12-30
   */
 /* USER CODE END Header_Beep_Task */
-void Beep_Task(void *argument)
+void Beep_Task(void const *argument)
 {
   /* USER CODE BEGIN Beep_Task */
   /* Infinite loop */
@@ -361,7 +324,7 @@ void Beep_Task(void *argument)
   * @retval None
   */
 /* USER CODE END Header_LED2_Task */
-void LED2_Task(void *argument)
+void LED2_Task(void const *argument)
 {
   /* USER CODE BEGIN LED2_Task */
   /* Infinite loop */
@@ -387,7 +350,7 @@ void LED2_Task(void *argument)
   * @retval None
   */
 /* USER CODE END Header_TPAD_Task */
-void TPAD_Task(void *argument)
+void TPAD_Task(void const *argument)
 {
   /* USER CODE BEGIN TPAD_Task */
   char TPAD_flag = 0;
@@ -420,11 +383,11 @@ void TPAD_Task(void *argument)
 * @retval None
 */
 /* USER CODE END Header_LCD_Task3 */
-void LCD_Task3(void *argument)
+void LCD_Task3(void const *argument)
 {
   /* USER CODE BEGIN LCD_Task3 */
   /* Infinite loop */
-  for(;;)
+  for (;;)
   {
     XPT2046_TouchEvenHandler();
     osDelay(10);
